@@ -1,0 +1,148 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/*
+ * Kivo theme: neutral monochrome, black primary, light only.
+ * Shape rule: controls (buttons, inputs, chips) 12px · cards 20px · floating shell 28px.
+ * Controls are capped at 40px tall.
+ */
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-heading: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --color-canvas: var(--canvas);
+  --color-shell: var(--shell);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 28px;
+
+  --animate-pop: pop 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-rise: rise 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes pop {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes rise {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+:root {
+  --radius: 12px;
+
+  /* The even backdrop the dashboard floats on. */
+  --canvas: #e7e7e4;
+  --shell: #ffffff;
+
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --card: #ffffff;
+  --card-foreground: #0a0a0a;
+  --popover: #ffffff;
+  --popover-foreground: #0a0a0a;
+  --primary: #0a0a0a;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f4f3;
+  --secondary-foreground: #0a0a0a;
+  --muted: #f4f4f3;
+  --muted-foreground: #5f5f5c;
+  --accent: #f1f1ef;
+  --accent-foreground: #0a0a0a;
+  --destructive: #d92d20;
+  --success: #12805c;
+  --border: #e9e9e6;
+  --input: #e2e2df;
+  --ring: #0a0a0a;
+
+  --sidebar: #f6f6f4;
+  --sidebar-foreground: #2b2b29;
+  --sidebar-accent: #ffffff;
+  --sidebar-border: #ebebe8;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/40;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    background: var(--canvas);
+    @apply font-sans;
+  }
+  body {
+    position: relative;
+    isolation: isolate;
+    min-height: 100dvh;
+    background: transparent;
+    color: var(--foreground);
+    overscroll-behavior-y: none;
+  }
+  body::before {
+    /* Blur only the scenery so the floating application surfaces remain crisp. */
+    content: "";
+    position: fixed;
+    z-index: -1;
+    inset: -12px;
+    pointer-events: none;
+    background:
+      linear-gradient(rgb(255 255 255 / 0.08), rgb(255 255 255 / 0.08)),
+      url("https://images.unsplash.com/photo-1664735867844-e9d8699b8533?auto=format&fit=crop&w=2400&q=80") center / cover no-repeat,
+      var(--canvas);
+    filter: blur(5px);
+    transform: scale(1.02);
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+/* Tinted, soft elevation for floating surfaces. */
+.shadow-float {
+  box-shadow:
+    0 1px 2px rgb(40 40 30 / 0.04),
+    0 12px 40px -12px rgb(40 40 30 / 0.14);
+}
+
+.pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+.pt-safe { padding-top: env(safe-area-inset-top); }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
