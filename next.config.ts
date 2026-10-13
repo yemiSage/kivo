@@ -1,6 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async rewrites() {
+    const adminHost = process.env.ADMIN_HOST?.trim() || "adminkivo-save.vercel.app";
+    return [
+      {
+        source: "/",
+        has: [{ type: "host", value: adminHost }],
+        destination: "/admin",
+      },
+    ];
+  },
   async headers() {
     return [
       {
