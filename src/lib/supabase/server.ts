@@ -2,9 +2,10 @@ import "server-only";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 import { redirect } from "next/navigation";
+import { cache } from "react";
 import { env } from "@/lib/env";
 
-export async function getServerSupabase() {
+export const getServerSupabase = cache(async () => {
   const cookieStore = await cookies();
   return createServerClient(env.supabaseUrl, env.supabaseAnonKey, {
     cookies: {
@@ -18,12 +19,12 @@ export async function getServerSupabase() {
       },
     },
   });
-}
+});
 
 /** Returns the signed-in user and a client, or redirects to /login. */
-export async function requireUser(next?: string) {
+export const requireUser = cache(async (next?: string) => {
   const supabase = await getServerSupabase();
   const { data } = await supabase.auth.getUser();
   if (!data.user) redirect(next ? `/login?next=${encodeURIComponent(next)}` : "/login");
   return { supabase, user: data.user };
-}
+});

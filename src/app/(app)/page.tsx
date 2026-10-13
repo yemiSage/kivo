@@ -24,7 +24,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
   const stats = [
     { label: "Saved", value: total.count ?? 0, Icon: BookmarkIcon },
     { label: "This week", value: week.count ?? 0, Icon: SparkleIcon },
-    { label: "Collections", value: collections.count ?? 0, Icon: FolderIcon, href: "/collections" },
+    { label: "Vaults", value: collections.count ?? 0, Icon: FolderIcon, href: "/collections" },
   ];
 
   return (

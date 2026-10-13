@@ -357,7 +357,7 @@ export function SaveScreen({ collections, share }: { collections: Collection[]; 
         {/* Options */}
         {(validUrl || file) && (
           <div className="flex flex-col gap-6">
-            <CollectionPicker collections={collections} value={collectionId} onChange={setCollectionId} label="Collection" helper="Optional. Kivo suggests one if you skip this." />
+            <CollectionPicker collections={collections} value={collectionId} onChange={setCollectionId} label="Vault" helper="Optional. Kivo suggests one if you skip this." />
             {showMore ? (
               <>
                 <TagInput value={tags} onChange={setTags} />
@@ -451,7 +451,7 @@ function SavedPanel({ saved, collections, onAnother }: { saved: Saved; collectio
           setCollectionId(id);
           patch({ collectionId: id });
         }}
-        label="Collection"
+        label="Vault"
       />
       <TagInput
         value={tags}

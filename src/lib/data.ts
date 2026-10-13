@@ -74,6 +74,10 @@ export async function listCollections(supabase: SupabaseClient): Promise<Collect
 }
 
 export async function listCollectionsWithCounts(supabase: SupabaseClient): Promise<CollectionWithCount[]> {
+  const { data: aggregated, error: aggregateError } = await supabase.rpc("list_vaults_with_counts");
+  if (!aggregateError) return (aggregated ?? []) as CollectionWithCount[];
+
+  // Backward-compatible fallback until the shared-vault migration is applied.
   const [collections, { data: rows }] = await Promise.all([
     listCollections(supabase),
     supabase

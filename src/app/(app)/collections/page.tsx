@@ -7,7 +7,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { NewCollectionButton } from "@/components/CollectionForms";
 import { FolderIcon } from "@/components/icons";
 
-export const metadata: Metadata = { title: "Collections" };
+export const metadata: Metadata = { title: "Vaults" };
 
 export default async function CollectionsPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const sp = await searchParams;
@@ -17,13 +17,13 @@ export default async function CollectionsPage({ searchParams }: { searchParams: 
   return (
     <>
       <PageHeader
-        title="Collections"
-        subtitle="Group saves by project, topic or mood."
-        crumbs={[{ label: "Collections" }]}
+        title="Vaults"
+        subtitle="Private or shared spaces for everything worth keeping."
+        crumbs={[{ label: "Vaults" }]}
         action={<NewCollectionButton defaultOpen={sp.new === "1"} />}
       />
       {collections.length === 0 ? (
-        <EmptyState icon={<FolderIcon size={24} />} title="No collections yet" body="Create one to group related saves." />
+        <EmptyState icon={<FolderIcon size={24} />} title="No vaults yet" body="Create one for yourself or your people." />
       ) : (
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
           {collections.map((c, i) => (

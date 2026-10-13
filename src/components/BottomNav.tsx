@@ -6,7 +6,7 @@ import { FolderIcon, HomeIcon, PlusIcon, SearchIcon, UserIcon } from "./icons";
 
 const TABS = [
   { href: "/", label: "Home", Icon: HomeIcon },
-  { href: "/collections", label: "Collections", Icon: FolderIcon },
+  { href: "/collections", label: "Vaults", Icon: FolderIcon },
   { href: "/save", label: "Save", Icon: PlusIcon, primary: true },
   { href: "/search", label: "Search", Icon: SearchIcon },
   { href: "/profile", label: "Profile", Icon: UserIcon },

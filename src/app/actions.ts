@@ -217,19 +217,19 @@ export async function deleteItem(id: string): Promise<ActionResult> {
 export async function createCollection(name: string, emoji?: string | null): Promise<ActionResult<{ collection: Collection }>> {
   try {
     const clean = name.trim().slice(0, 60);
-    if (!clean) return { ok: false, error: "Give your collection a name." };
+    if (!clean) return { ok: false, error: "Give your vault a name." };
     const { supabase } = await authed();
     const { data, error } = await supabase
       .from("collections")
       .insert({ name: clean, emoji: cleanText(emoji, 8) })
       .select("*")
       .single();
-    if (error?.code === "23505") return { ok: false, error: "You already have a collection with that name." };
+    if (error?.code === "23505") return { ok: false, error: "You already have a vault with that name." };
     if (error) throw error;
     revalidateLibrary();
     return { ok: true, data: { collection: data as Collection } };
   } catch (e) {
-    return fail(e, "Couldn't create the collection.");
+    return fail(e, "Couldn't create the vault.");
   }
 }
 
@@ -239,12 +239,12 @@ export async function updateCollection(id: string, name: string, emoji?: string 
     if (!clean) return { ok: false, error: "Name can't be empty." };
     const { supabase } = await authed();
     const { error } = await supabase.from("collections").update({ name: clean, emoji: cleanText(emoji, 8) }).eq("id", id);
-    if (error?.code === "23505") return { ok: false, error: "You already have a collection with that name." };
+    if (error?.code === "23505") return { ok: false, error: "You already have a vault with that name." };
     if (error) throw error;
     revalidateLibrary();
     return { ok: true };
   } catch (e) {
-    return fail(e, "Couldn't rename the collection.");
+    return fail(e, "Couldn't rename the vault.");
   }
 }
 
@@ -256,9 +256,36 @@ export async function deleteCollection(id: string): Promise<ActionResult> {
     if (error) throw error;
     revalidateLibrary();
   } catch (e) {
-    return fail(e, "Couldn't delete the collection.");
+    return fail(e, "Couldn't delete the vault.");
   }
   redirect("/collections");
+}
+
+export async function createVaultInvite(vaultId: string): Promise<ActionResult<{ token: string }>> {
+  try {
+    const { supabase } = await authed();
+    const { data, error } = await supabase
+      .from("vault_invites")
+      .insert({ vault_id: vaultId })
+      .select("token")
+      .single();
+    if (error) throw error;
+    return { ok: true, data: { token: data.token } };
+  } catch (e) {
+    return fail(e, "Couldn't create an invite. Apply the shared-vault database migration first.");
+  }
+}
+
+export async function acceptVaultInvite(token: string): Promise<ActionResult<{ vaultId: string }>> {
+  try {
+    const { supabase } = await authed();
+    const { data, error } = await supabase.rpc("accept_vault_invite", { invite_token: token });
+    if (error) throw error;
+    revalidateLibrary();
+    return { ok: true, data: { vaultId: data as string } };
+  } catch (e) {
+    return fail(e, "This invitation is invalid or has expired.");
+  }
 }
 
 // ─────────────────────────────── Account ───────────────────────────────

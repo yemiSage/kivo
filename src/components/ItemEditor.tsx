@@ -60,7 +60,7 @@ export function ItemEditor({ item, collections }: { item: ItemView; collections:
         value={collectionId}
         onChange={(id) => {
           setCollectionId(id);
-          patch({ collectionId: id }, id ? "Moved" : "Removed from collection");
+          patch({ collectionId: id }, id ? "Moved" : "Removed from vault");
         }}
       />
 
@@ -139,7 +139,7 @@ export function ItemEditor({ item, collections }: { item: ItemView; collections:
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Delete this item?</AlertDialogTitle>
-              <AlertDialogDescription>It will be removed from your library and collections. This can’t be undone.</AlertDialogDescription>
+              <AlertDialogDescription>It will be removed from your library and vaults. This can’t be undone.</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>

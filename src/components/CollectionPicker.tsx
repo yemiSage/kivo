@@ -13,7 +13,7 @@ export function CollectionPicker({
   collections: initial,
   value,
   onChange,
-  label = "Collection",
+  label = "Vault",
   helper,
 }: {
   collections: Collection[];
@@ -74,9 +74,9 @@ export function CollectionPicker({
               value={name}
               onChange={(e) => setName(e.target.value)}
               onBlur={() => !name && setAdding(false)}
-              placeholder="Collection name"
+              placeholder="Vault name"
               maxLength={60}
-              aria-label="New collection name"
+              aria-label="New vault name"
               className="w-44"
             />
             <Button type="submit" disabled={pending || !name.trim()}>

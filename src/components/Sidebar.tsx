@@ -29,7 +29,7 @@ const MAIN = [
   { href: "/", label: "Library", Icon: HomeIcon },
   { href: "/save", label: "Save", Icon: BookmarkIcon },
   { href: "/search", label: "Search", Icon: SearchIcon },
-  { href: "/collections", label: "Collections", Icon: FolderIcon },
+  { href: "/collections", label: "Vaults", Icon: FolderIcon },
 ];
 
 function NavLink({ href, active, children }: { href: string; active: boolean; children: React.ReactNode }) {
@@ -80,7 +80,7 @@ export function Sidebar({ email, collections }: { email: string | null; collecti
 
         <div className="my-4 h-px bg-sidebar-border" />
 
-        <p className="px-3 pb-1.5 text-xs font-medium text-muted-foreground">Collections</p>
+        <p className="px-3 pb-1.5 text-xs font-medium text-muted-foreground">Vaults</p>
         <ul className="space-y-0.5">
           {collections.map((c) => {
             const href = `/collections/${c.id}`;
@@ -100,7 +100,7 @@ export function Sidebar({ email, collections }: { email: string | null; collecti
               className="flex h-10 items-center gap-3 rounded-lg px-3 text-sm text-muted-foreground hover:bg-black/[0.03] hover:text-foreground"
             >
               <PlusIcon size={18} />
-              New collection
+              New vault
             </Link>
           </li>
         </ul>

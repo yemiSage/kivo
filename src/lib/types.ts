@@ -43,6 +43,11 @@ export interface CollectionWithCount extends Collection {
   cover: string | null;
 }
 
+export interface VaultMember {
+  user_id: string;
+  joined_at: string;
+}
+
 export interface LinkMetadata {
   url: string;
   canonicalUrl: string;

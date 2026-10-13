@@ -25,7 +25,7 @@ export default async function ProfilePage() {
           <div className="min-w-0 flex-1">
             <p className="truncate font-medium">{user.email}</p>
             <p className="text-sm text-muted-foreground tabular-nums">
-              {items ?? 0} saved · {collections ?? 0} collections
+              {items ?? 0} saved · {collections ?? 0} vaults
             </p>
           </div>
         </section>

@@ -18,11 +18,13 @@ export default async function CollectionPage({
 }) {
   const [{ id }, sp] = await Promise.all([params, searchParams]);
   const kind = parseKind(sp.kind);
-  const { supabase } = await requireUser(`/collections/${id}`);
+  const { supabase, user } = await requireUser(`/collections/${id}`);
 
-  const { data: collection } = await supabase.from("collections").select("*").eq("id", id).maybeSingle<Collection>();
+  const [{ data: collection }, items] = await Promise.all([
+    supabase.from("collections").select("*").eq("id", id).maybeSingle<Collection>(),
+    listItems(supabase, { collectionId: id, kind }),
+  ]);
   if (!collection) notFound();
-  const items = await listItems(supabase, { collectionId: id, kind });
 
   return (
     <>
@@ -30,8 +32,8 @@ export default async function CollectionPage({
         title={collection.name}
         subtitle={`${items.length} ${items.length === 1 ? "item" : "items"}`}
         back="/collections"
-        crumbs={[{ label: "Collections", href: "/collections" }, { label: collection.name }]}
-        action={<CollectionMenu collection={collection} />}
+        crumbs={[{ label: "Vaults", href: "/collections" }, { label: collection.name }]}
+        action={collection.user_id === user.id ? <CollectionMenu collection={collection} /> : undefined}
       />
       <KindFilter basePath={`/collections/${id}`} active={kind} />
       {items.length ? (
@@ -40,7 +42,7 @@ export default async function CollectionPage({
         <EmptyState
           icon={<FolderIcon size={24} />}
           title="Nothing here yet"
-          body="Pick this collection when you save, or move items here from their detail page."
+          body="Save directly to this vault, or move existing items here from their detail page."
           cta={{ href: "/save", label: "Save" }}
         />
       )}
