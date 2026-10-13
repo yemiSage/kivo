@@ -19,7 +19,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     // Even canvas; the whole app floats on it as one rounded surface.
-    <div className="flex min-h-dvh p-2 pt-[max(0.5rem,env(safe-area-inset-top))] md:h-dvh md:p-3 lg:p-4">
+    <div className="flex min-h-dvh p-2 pt-[max(0.5rem,env(safe-area-inset-top))] md:h-dvh md:p-[clamp(1.5rem,2.7778vw,2.5rem)]">
       <div className="shadow-float flex min-h-[calc(100dvh-1rem)] w-full overflow-hidden rounded-3xl border border-white/70 bg-shell md:min-h-0">
         <Sidebar email={email} collections={collections} />
         <div className="flex min-w-0 flex-1 flex-col">
