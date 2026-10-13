@@ -20,9 +20,9 @@ export function LoginForm({ next }: { next: string }) {
     setBusy(true);
     setError(null);
 
-    // Email links may open in a different browser/PWA context, so use the
-    // cross-browser implicit flow here. /auth/implicit transfers the verified
-    // session into the SSR cookie store used by the rest of the app.
+    // The email template sends Supabase's token hash to /auth/confirm, where
+    // the server verifies it and writes the SSR cookie session. This remains
+    // reliable when the link opens in a different browser or installed PWA.
     const supabase = createClient(env.supabaseUrl, env.supabaseAnonKey, {
       auth: { flowType: "implicit", persistSession: false, detectSessionInUrl: false },
     });
@@ -30,7 +30,7 @@ export function LoginForm({ next }: { next: string }) {
       email: email.trim(),
       options: {
         shouldCreateUser: true,
-        emailRedirectTo: `${window.location.origin}/auth/implicit?next=${encodeURIComponent(next)}`,
+        emailRedirectTo: `${window.location.origin}/auth/confirm?next=${encodeURIComponent(next)}`,
       },
     });
 
