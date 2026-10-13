@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { saveLink, saveUpload, updateItem, type SaveResult } from "@/app/actions";
 import { getBrowserSupabase } from "@/lib/supabase/client";
+import { MAX_IMAGE_UPLOAD_BYTES, optimizeImageForUpload } from "@/lib/image-upload";
 import type { Collection, ItemView, LinkMetadata } from "@/lib/types";
 import { extractUrl, hostLabel, parseHttpUrl, PLATFORM_LABEL } from "@/lib/url";
 import { CollectionPicker } from "./CollectionPicker";
@@ -17,8 +18,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { TagInput } from "./TagInput";
 import { useToast } from "./Toast";
-
-const MAX_UPLOAD = 10 * 1024 * 1024;
 
 export interface ShareParams {
   url?: string;
@@ -112,8 +111,18 @@ export function SaveScreen({ collections, share }: { collections: Collection[]; 
   const doSaveFile = useCallback(
     (f: File, sourceUrl?: string | null, title?: string | null) =>
       startSaving(async () => {
-        if (f.size > MAX_UPLOAD) {
-          setError("Images must be under 10 MB.");
+        let upload = f;
+        try {
+          upload = await optimizeImageForUpload(f);
+        } catch {
+          if (f.size <= MAX_IMAGE_UPLOAD_BYTES) upload = f;
+          else {
+            setError("This image couldn't be resized. Choose an image that is 5 MB or smaller.");
+            return;
+          }
+        }
+        if (upload.size > MAX_IMAGE_UPLOAD_BYTES) {
+          setError("The resized image is still larger than 5 MB. Choose a smaller image.");
           return;
         }
         const supabase = getBrowserSupabase();
@@ -122,9 +131,9 @@ export function SaveScreen({ collections, share }: { collections: Collection[]; 
           setError("Your session expired. Please sign in again.");
           return;
         }
-        const ext = (f.name.split(".").pop() || f.type.split("/")[1] || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 5);
+        const ext = (upload.name.split(".").pop() || upload.type.split("/")[1] || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 5);
         const path = `${data.user.id}/${crypto.randomUUID()}.${ext}`;
-        const up = await supabase.storage.from("media").upload(path, f, { contentType: f.type || undefined, cacheControl: "31536000" });
+        const up = await supabase.storage.from("media").upload(path, upload, { contentType: upload.type || undefined, cacheControl: "31536000" });
         if (up.error) {
           setError("Upload failed. Check your connection and try again.");
           return;

@@ -133,7 +133,7 @@ create trigger on_auth_user_created
 -- ─────────────────────────────── Storage ───────────────────────────────
 -- Private bucket; objects live under "<user_id>/…". Served via short-lived signed URLs.
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('media', 'media', false, 10485760,
+values ('media', 'media', false, 5242880,
         array['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/heic', 'image/heif', 'image/avif'])
 on conflict (id) do nothing;
 
