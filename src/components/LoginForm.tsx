@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { env } from "@/lib/env";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CheckIcon } from "@/components/icons";
+
+const OTP_LENGTH = 6;
 
 /** Passwordless email-link sign-in with a code fallback for isolated PWA storage. */
 export function LoginForm({ next }: { next: string }) {
@@ -15,6 +17,7 @@ export function LoginForm({ next }: { next: string }) {
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const verifying = useRef(false);
 
   const authClient = () =>
     createClient(env.supabaseUrl, env.supabaseAnonKey, {
@@ -51,14 +54,15 @@ export function LoginForm({ next }: { next: string }) {
     setSent(true);
   };
 
-  const verifyCode = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const token = code.replace(/\D/g, "");
-    if (token.length !== 6) {
+  const verifyCode = async (rawToken: string) => {
+    const token = rawToken.replace(/\D/g, "");
+    if (token.length !== OTP_LENGTH) {
       setError("Enter the 6-digit code from your email.");
       return;
     }
+    if (verifying.current) return;
 
+    verifying.current = true;
     setBusy(true);
     setError(null);
     const { data, error: verifyError } = await authClient().auth.verifyOtp({
@@ -68,6 +72,7 @@ export function LoginForm({ next }: { next: string }) {
     });
 
     if (verifyError || !data.session) {
+      verifying.current = false;
       setBusy(false);
       setError(verifyError?.message ?? "That code is invalid or has expired.");
       return;
@@ -83,12 +88,25 @@ export function LoginForm({ next }: { next: string }) {
     });
 
     if (!response.ok) {
+      verifying.current = false;
       setBusy(false);
       setError("We couldn’t finish signing you in. Request a new code.");
       return;
     }
 
     window.location.replace(next);
+  };
+
+  const submitCode = (e: React.FormEvent) => {
+    e.preventDefault();
+    void verifyCode(code);
+  };
+
+  const updateCode = (value: string) => {
+    const nextCode = value.replace(/\D/g, "").slice(0, OTP_LENGTH);
+    setCode(nextCode);
+    setError(null);
+    if (nextCode.length === OTP_LENGTH) void verifyCode(nextCode);
   };
 
   if (sent) {
@@ -103,7 +121,7 @@ export function LoginForm({ next }: { next: string }) {
             We sent a sign-in link and code to <span className="font-medium text-foreground">{email}</span>.
           </p>
         </div>
-        <form onSubmit={verifyCode} className="flex w-full flex-col gap-3">
+        <form onSubmit={submitCode} className="flex w-full flex-col gap-3" aria-busy={busy}>
           <div className="flex flex-col gap-2">
             <Label htmlFor="email-code">6-digit code</Label>
             <Input
@@ -111,21 +129,19 @@ export function LoginForm({ next }: { next: string }) {
               type="text"
               inputMode="numeric"
               autoComplete="one-time-code"
-              maxLength={6}
+              maxLength={OTP_LENGTH}
               required
               autoFocus
+              disabled={busy}
               value={code}
-              onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+              onChange={(e) => updateCode(e.target.value)}
               placeholder="000000"
               className="text-center font-mono text-lg tracking-[0.35em]"
               aria-invalid={Boolean(error)}
             />
-            <p className="text-xs leading-relaxed text-muted-foreground">
-              In the installed app, enter the code here. You can also tap the link in your email on supported devices.
-            </p>
           </div>
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-          <Button type="submit" disabled={busy || code.length !== 6}>
+          <Button type="submit" disabled={busy || code.length !== OTP_LENGTH}>
             {busy ? "Signing in" : "Sign in"}
           </Button>
         </form>

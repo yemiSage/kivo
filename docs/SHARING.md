@@ -45,6 +45,8 @@ native iOS app (see "Future: native companions" below).
 - Sign-in uses a 6-digit email code, not only a magic link: an installed iOS PWA has
   storage separate from Safari, so a magic link would sign in Safari, not the app.
   **Configure the Supabase "Magic Link" email template to include `{{ .Token }}`.**
+  Set the hosted project’s Email OTP length to `6`; Kivo verifies automatically
+  when the sixth digit is entered.
 - The manifest asks supported platforms to open in-scope email links in the installed
   Kivo window. Android WebAPK installations support this; iOS does not, which is why
   the code entry remains the reliable cross-platform path.
