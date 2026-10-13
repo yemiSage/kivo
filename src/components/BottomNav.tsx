@@ -30,7 +30,7 @@ export function BottomNav() {
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "flex items-center justify-center rounded-full outline-none transition active:scale-95 focus-visible:ring-2 focus-visible:ring-ring/40",
-                  primary ? "size-11 bg-primary text-primary-foreground" : "size-10",
+                  primary ? "size-11 bg-[#d3d2d2] text-[#353535]" : "size-10",
                   !primary && (active ? "bg-secondary text-foreground" : "text-muted-foreground"),
                 )}
               >

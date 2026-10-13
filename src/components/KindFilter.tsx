@@ -15,12 +15,16 @@ export function KindFilter({ basePath, active, extra = {} }: { basePath: string;
   };
   const items: { kind: ItemKind | null; label: string; Icon: (p: { size?: number }) => React.ReactNode }[] = [
     { kind: null, label: "All", Icon: GridIcon },
-    ...ITEM_KINDS.map((k) => ({ kind: k, label: KIND_META[k].plural, Icon: KIND_META[k].Icon })),
+    ...ITEM_KINDS.filter((kind) => kind !== "article").map((kind) => ({
+      kind,
+      label: KIND_META[kind].plural,
+      Icon: KIND_META[kind].Icon,
+    })),
   ];
 
   return (
     <nav aria-label="Filter by type" className="no-scrollbar -mx-4 mb-5 overflow-x-auto px-4 md:mx-0 md:px-0">
-      <div className="inline-flex h-10 items-center gap-0.5 rounded-xl border bg-secondary p-1">
+      <div className="flex h-10 w-full items-center gap-0.5 rounded-xl border bg-secondary p-1 md:w-fit">
         {items.map(({ kind, label, Icon }) => {
           const on = active === kind;
           return (
@@ -30,7 +34,7 @@ export function KindFilter({ basePath, active, extra = {} }: { basePath: string;
               scroll={false}
               aria-current={on ? "true" : undefined}
               className={cn(
-                "flex h-8 shrink-0 items-center gap-1.5 rounded-lg px-3 text-sm transition-colors",
+                "flex h-8 min-w-0 flex-1 items-center justify-center gap-1 rounded-lg px-1 text-xs transition-colors md:flex-none md:gap-1.5 md:px-3 md:text-sm",
                 on ? "bg-background font-medium text-foreground shadow-[0_1px_2px_rgb(40_40_30/0.08)]" : "text-muted-foreground hover:text-foreground",
               )}
             >

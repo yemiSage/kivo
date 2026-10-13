@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { requireUser } from "@/lib/supabase/server";
 import { PageHeader } from "@/components/PageHeader";
-import { SignOutButton, DeviceInfo } from "@/components/ProfileClient";
+import { SignOutButton } from "@/components/ProfileClient";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ShieldIcon } from "@/components/icons";
 
@@ -30,9 +30,7 @@ export default async function ProfilePage() {
           </div>
         </section>
 
-        <DeviceInfo />
-
-        <section className="flex gap-4 rounded-2xl border bg-card p-5">
+        <section className="flex flex-col gap-4 rounded-2xl border bg-card p-3 md:flex-row md:p-5">
           <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-secondary">
             <ShieldIcon size={20} />
           </span>

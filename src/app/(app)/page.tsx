@@ -34,7 +34,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
         subtitle="Everything you’ve saved, newest first."
         crumbs={[{ label: "Library" }]}
         action={
-          <Button asChild>
+          <Button asChild className="hidden md:inline-flex">
             <Link href="/save">
               <PlusIcon size={18} /> Save
             </Link>

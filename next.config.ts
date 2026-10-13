@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        source: "/kivo-canvas-v1.webp",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+      {
         // The service worker must never be cached by the HTTP cache, or updates stall.
         source: "/sw.js",
         headers: [

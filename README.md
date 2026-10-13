@@ -11,7 +11,7 @@ A mobile-first PWA built with Next.js 16, Supabase and Tailwind CSS 4.
    a private `media` storage bucket.
 3. **Auth settings** (Authentication → URL configuration / Email templates):
    - Site URL: your deployed URL. Add `http://localhost:3000/**` and your Vercel URL `/**` to redirect URLs.
-   - Kivo supports both a passwordless link and a 6-digit code so installed iOS PWAs can sign in without sharing Safari's session. Add `{{ .Token }}` to the Magic Link email template as the visible code, while keeping the confirmation link.
+   - Kivo supports both a passwordless link and a 6-digit code so installed iOS PWAs can sign in without sharing Safari's session. In the Magic Link email template, keep the `{{ .ConfirmationURL }}` link and add `{{ .Token }}` where the visible code should appear.
    - Custom SMTP is optional and only needed for branded sender details and higher delivery limits.
 4. **Env:** `cp .env.example .env.local` and fill in the Supabase URL + anon key.
    `GEMINI_API_KEY` is optional; without it, categorisation uses the built-in rules.

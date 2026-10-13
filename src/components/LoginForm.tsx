@@ -26,14 +26,15 @@ export function LoginForm({ next }: { next: string }) {
     setBusy(true);
     setError(null);
 
-    // The link is convenient where the OS routes it into the installed PWA.
+    // The default Supabase link returns tokens in the URL fragment, which the
+    // client-only implicit page can safely exchange for the server cookie.
     // The visible OTP is the cross-browser fallback (notably for iOS PWAs).
     const supabase = authClient();
     const { error } = await supabase.auth.signInWithOtp({
       email: email.trim(),
       options: {
         shouldCreateUser: true,
-        emailRedirectTo: `${window.location.origin}/auth/confirm?next=${encodeURIComponent(next)}`,
+        emailRedirectTo: `${window.location.origin}/auth/implicit?next=${encodeURIComponent(next)}`,
       },
     });
 

@@ -22,9 +22,9 @@ export function PageHeader({
   crumbs?: Crumb[];
 }) {
   return (
-    <header className="mb-6">
+    <>
       {/* Top bar: breadcrumb on desktop, brand + back on mobile */}
-      <div className="-mx-4 flex h-14 items-center gap-2 border-b px-4 md:-mx-8 md:h-16 md:px-8">
+      <div className="sticky top-0 z-30 -mx-4 flex h-14 items-center gap-2 border-b bg-shell px-4 md:static md:-mx-8 md:h-16 md:px-8">
         {back ? (
           <Link href={back} aria-label="Back" className="-ml-2 flex size-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground md:hidden">
             <ChevronLeftIcon size={20} />
@@ -52,10 +52,12 @@ export function PageHeader({
         <div className="ml-auto flex items-center gap-2">{action}</div>
       </div>
 
-      <div className="pt-6 md:pt-8">
-        <h1 className="text-[26px] font-semibold leading-tight tracking-tight md:text-[28px]">{title}</h1>
-        {subtitle && <p className="mt-1 text-[15px] text-muted-foreground">{subtitle}</p>}
-      </div>
-    </header>
+      <header className="mb-6">
+        <div className="pt-[18px] md:pt-8">
+          <h1 className="text-xl font-semibold leading-tight tracking-tight md:text-[28px]">{title}</h1>
+          {subtitle && <p className="mt-1 text-sm text-muted-foreground md:text-[15px]">{subtitle}</p>}
+        </div>
+      </header>
+    </>
   );
 }
