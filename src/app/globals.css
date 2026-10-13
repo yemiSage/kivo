@@ -140,6 +140,20 @@
 .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
 .pt-safe { padding-top: env(safe-area-inset-top); }
 
+/* 20px at the 360px reference width, gently scaling across phone sizes. */
+.app-frame {
+  --app-frame-inset: clamp(16px, 5.5556vw, 24px);
+  padding-inline: max(var(--app-frame-inset), env(safe-area-inset-left), env(safe-area-inset-right));
+  padding-top: max(var(--app-frame-inset), env(safe-area-inset-top));
+  padding-bottom: max(var(--app-frame-inset), env(safe-area-inset-bottom));
+}
+
+@media (min-width: 48rem) {
+  .app-frame {
+    --app-frame-inset: clamp(24px, 5.5556vw, 80px);
+  }
+}
+
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }
 

@@ -18,22 +18,22 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    // Even canvas; the whole app floats on it as one rounded surface.
-    <div className="flex min-h-dvh p-2 pt-[max(0.5rem,env(safe-area-inset-top))] md:h-dvh md:p-[clamp(1.5rem,5.5556vw,5rem)]">
-      <div className="shadow-float flex min-h-[calc(100dvh-1rem)] w-full overflow-hidden rounded-3xl border border-white/70 bg-shell md:min-h-0">
+    // At 360px wide the responsive frame inset resolves to 20px on every side.
+    <div className="app-frame flex h-dvh overflow-hidden">
+      <div className="shadow-float flex min-h-0 w-full overflow-hidden rounded-3xl border border-white/70 bg-shell">
         <Sidebar email={email} collections={collections} />
-        <div className="flex min-w-0 flex-1 flex-col">
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col">
           {!env.configured && (
             <div className="border-b bg-secondary px-4 py-2 text-center text-sm text-muted-foreground">
               Supabase isn’t configured. Copy <code className="font-mono">.env.example</code> to <code className="font-mono">.env.local</code> and add your keys.
             </div>
           )}
-          <main className="flex-1 md:overflow-y-auto">
-            <div className="mx-auto w-full max-w-5xl px-4 pb-32 md:px-8 md:pb-12">{children}</div>
+          <main className="min-h-0 flex-1 overflow-y-auto">
+            <div className="mx-auto w-full max-w-5xl px-4 pb-6 md:px-8 md:pb-12">{children}</div>
           </main>
+          <BottomNav />
         </div>
       </div>
-      <BottomNav />
     </div>
   );
 }

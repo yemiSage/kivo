@@ -12,14 +12,14 @@ const TABS = [
   { href: "/profile", label: "Profile", Icon: UserIcon },
 ];
 
-/** Mobile only: a floating pill above the canvas. Desktop uses the sidebar. */
+/** Mobile only: part of the app shell, pinned below the independently scrolling content. */
 export function BottomNav() {
   const pathname = usePathname();
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
   return (
-    <nav aria-label="Primary" className="pb-safe pointer-events-none fixed inset-x-0 bottom-0 z-40 px-4 pb-3 md:hidden">
-      <ul className="shadow-float pointer-events-auto mx-auto flex h-16 max-w-sm items-center justify-around rounded-[28px] border border-black/[0.04] bg-white/90 px-2 backdrop-blur-xl">
+    <nav aria-label="Primary" className="sticky bottom-0 z-40 shrink-0 bg-shell px-3 pb-3 pt-2 md:hidden">
+      <ul className="mx-auto flex h-16 w-full items-center justify-around rounded-2xl border border-black/[0.04] bg-secondary/70 px-2">
         {TABS.map(({ href, label, Icon, primary }) => {
           const active = isActive(href);
           return (
