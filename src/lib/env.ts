@@ -6,4 +6,6 @@ export const env = {
   supabaseAnonKey: supabaseAnonKey || "placeholder",
   configured: Boolean(supabaseUrl && supabaseAnonKey),
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  brevoApiKey: process.env.BREVO_API_KEY ?? "",
+  fromEmail: process.env.KIVO_FROM_EMAIL ?? "",
 };

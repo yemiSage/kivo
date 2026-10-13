@@ -7,6 +7,8 @@ import { getLinkMetadata } from "@/lib/metadata";
 import { suggestCategory } from "@/lib/categorize";
 import { MEDIA_BUCKET, withImages, listCollections } from "@/lib/data";
 import { canonicalize, extractUrl, parseHttpUrl } from "@/lib/url";
+import { sendVaultInviteEmail } from "@/lib/email";
+import { env } from "@/lib/env";
 import type { ActionResult, Collection, Item, ItemKind, ItemView } from "@/lib/types";
 import { ITEM_KINDS } from "@/lib/types";
 
@@ -273,6 +275,38 @@ export async function createVaultInvite(vaultId: string): Promise<ActionResult<{
     return { ok: true, data: { token: data.token } };
   } catch (e) {
     return fail(e, "Couldn't create an invite. Apply the shared-vault database migration first.");
+  }
+}
+
+export async function sendVaultInvite(vaultId: string, email: string): Promise<ActionResult> {
+  try {
+    const recipient = email.trim().toLowerCase().slice(0, 320);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient)) return { ok: false, error: "Enter a valid email address." };
+    const { supabase, user } = await authed();
+    const { data: vault, error: vaultError } = await supabase.from("collections").select("name").eq("id", vaultId).single();
+    if (vaultError || !vault) throw vaultError ?? new Error("Vault not found");
+
+    const { data: invite, error } = await supabase
+      .from("vault_invites")
+      .insert({ vault_id: vaultId, invited_email: recipient })
+      .select("id, token")
+      .single();
+    if (error) throw error;
+
+    try {
+      await sendVaultInviteEmail({
+        to: recipient,
+        vaultName: vault.name,
+        inviter: user.email ?? "Someone",
+        inviteUrl: `${env.siteUrl.replace(/\/$/, "")}/vault-invite/${invite.token}`,
+      });
+    } catch (emailError) {
+      await supabase.from("vault_invites").delete().eq("id", invite.id);
+      throw emailError;
+    }
+    return { ok: true };
+  } catch (e) {
+    return fail(e, "Couldn't send the invitation. Check the Brevo configuration and try again.");
   }
 }
 

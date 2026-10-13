@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { createCollection, createVaultInvite, deleteCollection, updateCollection } from "@/app/actions";
+import { createCollection, createVaultInvite, deleteCollection, sendVaultInvite, updateCollection } from "@/app/actions";
 import type { Collection } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -128,6 +128,7 @@ export function NewCollectionButton({ defaultOpen = false }: { defaultOpen?: boo
 export function CollectionMenu({ collection }: { collection: Collection }) {
   const [mode, setMode] = useState<"none" | "rename" | "share" | "delete">("none");
   const [inviteUrl, setInviteUrl] = useState("");
+  const [inviteEmail, setInviteEmail] = useState("");
   const [pending, start] = useTransition();
   const toast = useToast();
   const router = useRouter();
@@ -175,8 +176,27 @@ export function CollectionMenu({ collection }: { collection: Collection }) {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Share {collection.name}</DialogTitle>
-            <DialogDescription>Anyone with this link can join for seven days and collaborate on items in this vault.</DialogDescription>
+            <DialogDescription>Invite someone by email, or create a shareable link. Invitations expire after seven days.</DialogDescription>
           </DialogHeader>
+          <form
+            className="flex flex-col gap-2"
+            onSubmit={(event) => {
+              event.preventDefault();
+              start(async () => {
+                const res = await sendVaultInvite(collection.id, inviteEmail);
+                if (!res.ok) return toast(res.error, "error");
+                toast(`Invitation sent to ${inviteEmail.trim()}`);
+                setInviteEmail("");
+              });
+            }}
+          >
+            <Label htmlFor="vault-invite-email">Email address</Label>
+            <div className="flex gap-2">
+              <Input id="vault-invite-email" type="email" required value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} placeholder="friend@example.com" />
+              <Button type="submit" disabled={pending || !inviteEmail.trim()}>{pending ? "Sending" : "Send"}</Button>
+            </div>
+          </form>
+          <div className="flex items-center gap-3 text-xs text-muted-foreground before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border">or share a link</div>
           {inviteUrl ? (
             <div className="flex gap-2">
               <Input readOnly value={inviteUrl} aria-label="Vault invite link" />
