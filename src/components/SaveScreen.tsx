@@ -220,7 +220,7 @@ export function SaveScreen({ collections, share }: { collections: Collection[]; 
 
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -274,7 +274,7 @@ export function SaveScreen({ collections, share }: { collections: Collection[]; 
 
         {/* Quick actions */}
         {!input && !file && (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2">
             {[
               { label: "Paste & save", hint: "From clipboard", Icon: ClipboardIcon, onClick: pasteFromClipboard },
               { label: "Upload image", hint: "From this device", Icon: ImageIcon, onClick: () => fileInput.current?.click() },
