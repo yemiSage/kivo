@@ -220,16 +220,22 @@ export async function createCollection(name: string, emoji?: string | null): Pro
   try {
     const clean = name.trim().slice(0, 60);
     if (!clean) return { ok: false, error: "Give your vault a name." };
-    const { supabase } = await authed();
-    const { data, error } = await supabase
-      .from("collections")
-      .insert({ name: clean, emoji: cleanText(emoji, 8) })
-      .select("*")
-      .single();
+    const { supabase, user } = await authed();
+    // The id is generated here and the row isn't read back: the "members read" policy
+    // goes through can_access_vault(), which can't see a row inserted in the same
+    // statement, so INSERT ... RETURNING would fail with an RLS violation.
+    const collection: Collection = {
+      id: crypto.randomUUID(),
+      user_id: user.id,
+      name: clean,
+      emoji: cleanText(emoji, 8),
+      created_at: new Date().toISOString(),
+    };
+    const { error } = await supabase.from("collections").insert(collection);
     if (error?.code === "23505") return { ok: false, error: "You already have a vault with that name." };
     if (error) throw error;
     revalidateLibrary();
-    return { ok: true, data: { collection: data as Collection } };
+    return { ok: true, data: { collection } };
   } catch (e) {
     return fail(e, "Couldn't create the vault.");
   }
