@@ -18,9 +18,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    // At 360px wide the responsive frame inset resolves to 20px on every side.
+    // Mobile is edge-to-edge; desktop keeps the floating framed workspace.
     <div className="app-frame flex h-dvh overflow-hidden">
-      <div className="shadow-float flex min-h-0 w-full overflow-hidden rounded-3xl border border-white/70 bg-shell">
+      <div className="flex min-h-0 w-full overflow-hidden bg-shell md:rounded-3xl md:border md:border-white/70 md:shadow-[0_1px_2px_rgb(40_40_30/0.04),0_12px_40px_-12px_rgb(40_40_30/0.14)]">
         <Sidebar email={email} collections={collections} />
         <div className="flex min-h-0 min-w-0 flex-1 flex-col">
           {!env.configured && (

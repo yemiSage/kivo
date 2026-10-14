@@ -6,7 +6,6 @@ import { env } from "@/lib/env";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CheckIcon } from "@/components/icons";
 
 const OTP_LENGTH = 6;
 
@@ -112,9 +111,6 @@ export function LoginForm({ next }: { next: string }) {
   if (sent) {
     return (
       <div className="flex flex-col items-start gap-4">
-        <span className="flex size-10 items-center justify-center rounded-xl bg-secondary text-foreground">
-          <CheckIcon size={20} variant="Bold" />
-        </span>
         <div role="status">
           <h2 className="font-semibold">Check your inbox</h2>
           <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
@@ -159,7 +155,7 @@ export function LoginForm({ next }: { next: string }) {
 
   return (
     <form onSubmit={sendLink} className="flex flex-col gap-4">
-      <div className="mb-[60px] flex flex-col gap-2">
+      <div className="mb-10 flex flex-col gap-2 md:mb-[60px]">
         <Label htmlFor="email">Email</Label>
         <Input
           id="email"

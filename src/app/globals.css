@@ -99,7 +99,7 @@
   html {
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
-    background: var(--canvas);
+    background: var(--shell);
     @apply font-sans;
   }
   body {
@@ -112,7 +112,7 @@
   }
   body::before {
     /* The local asset is pre-blurred so first paint needs no remote fetch or live filter. */
-    content: "";
+    content: none;
     position: fixed;
     z-index: -1;
     inset: -12px;
@@ -138,17 +138,46 @@
 .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
 .pt-safe { padding-top: env(safe-area-inset-top); }
 
-/* 20px at the 360px reference width, gently scaling across phone sizes. */
 .app-frame {
-  --app-frame-inset: clamp(16px, 5.5556vw, 24px);
-  padding-inline: max(var(--app-frame-inset), env(safe-area-inset-left), env(safe-area-inset-right));
-  padding-top: max(var(--app-frame-inset), env(safe-area-inset-top));
-  padding-bottom: max(var(--app-frame-inset), env(safe-area-inset-bottom));
+  width: 100vw;
+}
+
+/* Authentication keeps the scenic canvas on phones; the signed-in shell stays plain. */
+.auth-screen {
+  position: relative;
+  isolation: isolate;
+}
+
+.auth-screen::before {
+  content: "";
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(rgb(255 255 255 / 0.08), rgb(255 255 255 / 0.08)),
+    url("/kivo-canvas-v1.webp") center / cover no-repeat,
+    var(--canvas);
 }
 
 @media (min-width: 48rem) {
+  html {
+    background: var(--canvas);
+  }
+
+  body::before {
+    content: "";
+  }
+
+  .auth-screen::before {
+    content: none;
+  }
+
   .app-frame {
     --app-frame-inset: clamp(24px, 5.5556vw, 80px);
+    padding-inline: max(var(--app-frame-inset), env(safe-area-inset-left), env(safe-area-inset-right));
+    padding-top: max(var(--app-frame-inset), env(safe-area-inset-top));
+    padding-bottom: max(var(--app-frame-inset), env(safe-area-inset-bottom));
   }
 }
 

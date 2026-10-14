@@ -15,7 +15,7 @@ export function KindFilter({ basePath, active, extra = {} }: { basePath: string;
   };
   const items: { kind: ItemKind | null; label: string; Icon: (p: { size?: number }) => React.ReactNode }[] = [
     { kind: null, label: "All", Icon: GridIcon },
-    ...ITEM_KINDS.filter((kind) => kind !== "article").map((kind) => ({
+    ...ITEM_KINDS.filter((kind) => kind !== "article" && kind !== "post").map((kind) => ({
       kind,
       label: KIND_META[kind].plural,
       Icon: KIND_META[kind].Icon,

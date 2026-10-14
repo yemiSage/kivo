@@ -46,17 +46,18 @@ export async function searchItems(
   query: string,
   kind?: ItemKind | null,
   tag?: string | null,
+  limit = 120,
 ): Promise<ItemView[]> {
   const q = query.trim().slice(0, 200);
   if (tag) {
-    let req = supabase.from("items").select("*").contains("tags", [tag]).order("created_at", { ascending: false }).limit(120);
+    let req = supabase.from("items").select("*").contains("tags", [tag]).order("created_at", { ascending: false }).limit(limit);
     if (kind) req = req.eq("kind", kind);
     const { data, error } = await req;
     if (error) throw error;
     return withImages(supabase, (data ?? []) as Item[]);
   }
-  if (!q) return listItems(supabase, { kind, limit: 60 });
-  const { data, error } = await supabase.rpc("search_items", { q, kind_filter: kind ?? null, lim: 120 });
+  if (!q) return listItems(supabase, { kind, limit: Math.min(limit, 60) });
+  const { data, error } = await supabase.rpc("search_items", { q, kind_filter: kind ?? null, lim: limit });
   if (error) throw error;
   return withImages(supabase, (data ?? []) as Item[]);
 }

@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import { signOut } from "@/app/actions";
 import type { Collection } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -14,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { BrandMark } from "./BrandMark";
+import { SearchModal } from "./SearchModal";
 import {
   BookmarkIcon,
   ChevronDownIcon,
@@ -51,6 +53,7 @@ function NavLink({ href, active, children }: { href: string; active: boolean; ch
 
 export function Sidebar({ email, collections }: { email: string | null; collections: Pick<Collection, "id" | "name">[] }) {
   const pathname = usePathname();
+  const [searchOpen, setSearchOpen] = useState(false);
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`));
 
   return (
@@ -66,13 +69,30 @@ export function Sidebar({ email, collections }: { email: string | null; collecti
         <p className="px-3 pb-1.5 pt-3 text-xs font-medium text-muted-foreground">Main</p>
         <ul className="space-y-0.5">
           {MAIN.map(({ href, label, Icon }) => {
-            const active = href === "/collections" ? pathname === "/collections" : isActive(href);
+            const active = href === "/search" ? searchOpen : href === "/collections" ? pathname === "/collections" : isActive(href);
             return (
               <li key={href}>
-                <NavLink href={href} active={active}>
-                  <Icon size={20} className={active ? "text-foreground" : "text-muted-foreground"} />
-                  {label}
-                </NavLink>
+                {href === "/search" ? (
+                  <button
+                    type="button"
+                    aria-pressed={searchOpen}
+                    onClick={() => setSearchOpen(true)}
+                    className={cn(
+                      "flex h-10 w-full items-center gap-3 rounded-lg px-3 text-[15px] transition-colors",
+                      active
+                        ? "bg-sidebar-accent font-medium text-foreground shadow-[0_1px_2px_rgb(40_40_30/0.06),0_0_0_1px_rgb(40_40_30/0.04)]"
+                        : "text-sidebar-foreground/80 hover:bg-black/[0.03] hover:text-foreground",
+                    )}
+                  >
+                    <Icon size={20} className={active ? "text-foreground" : "text-muted-foreground"} />
+                    {label}
+                  </button>
+                ) : (
+                  <NavLink href={href} active={active}>
+                    <Icon size={20} className={active ? "text-foreground" : "text-muted-foreground"} />
+                    {label}
+                  </NavLink>
+                )}
               </li>
             );
           })}
@@ -136,6 +156,7 @@ export function Sidebar({ email, collections }: { email: string | null; collecti
           </DropdownMenu>
         </div>
       )}
+      <SearchModal open={searchOpen} onOpenChange={setSearchOpen} />
     </aside>
   );
 }

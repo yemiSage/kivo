@@ -18,8 +18,8 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   }
 
   return (
-    <main className="pt-safe flex min-h-dvh items-center justify-center p-4">
-      <div className="shadow-float animate-rise w-full max-w-[400px] rounded-3xl border border-white/70 bg-shell p-6 md:p-8">
+    <main className="auth-screen pt-safe flex min-h-dvh items-center justify-center p-4">
+      <div className="animate-rise w-full max-w-[400px] rounded-3xl border-0 bg-shell p-6 shadow-none md:border md:border-white/70 md:p-8 md:shadow-[0_1px_2px_rgb(40_40_30/0.04),0_12px_40px_-12px_rgb(40_40_30/0.14)]">
         <div className="mb-5 flex items-center gap-2.5">
           <BrandMark />
           <span className="text-lg font-semibold tracking-tight">Kivo</span>

@@ -48,7 +48,7 @@ export default function ImplicitAuthPage() {
   }, []);
 
   return (
-    <main className="pt-safe flex min-h-dvh items-center justify-center p-4">
+    <main className="auth-screen pt-safe flex min-h-dvh items-center justify-center p-4">
       <div className="shadow-float animate-rise w-full max-w-[400px] rounded-3xl border border-white/70 bg-shell p-6 text-center md:p-8">
         <div className="mx-auto mb-5 flex w-fit items-center gap-2.5">
           <BrandMark />
