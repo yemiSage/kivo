@@ -6,6 +6,7 @@ import { acceptVaultInvite } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { FolderIcon } from "@/components/icons";
 import { useToast } from "@/components/Toast";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
 
 export function VaultInviteAccept({ token }: { token: string }) {
   const [pending, start] = useTransition();
@@ -27,7 +28,7 @@ export function VaultInviteAccept({ token }: { token: string }) {
           router.refresh();
         })}
       >
-        {pending ? "Joining" : "Join shared vault"}
+        {pending ? <><LoadingSpinner className="size-4" label="Joining vault" /> Joining…</> : "Join shared vault"}
       </Button>
     </div>
   );

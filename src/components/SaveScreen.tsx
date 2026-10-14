@@ -18,6 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { TagInput } from "./TagInput";
 import { useToast } from "./Toast";
+import { LoadingSpinner } from "./LoadingSpinner";
 
 export interface ShareParams {
   url?: string;
@@ -372,7 +373,7 @@ export function SaveScreen({ collections, share }: { collections: Collection[]; 
                 <TagInput value={tags} onChange={setTags} />
                 <div className="flex flex-col gap-2">
                   <Label htmlFor="notes">Note</Label>
-                  <Textarea id="notes" rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Why you saved this" className="resize-none" />
+                  <Textarea id="notes" name="notes" autoComplete="off" rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Why you saved this…" className="resize-none" />
                 </div>
               </>
             ) : (
@@ -393,7 +394,7 @@ export function SaveScreen({ collections, share }: { collections: Collection[]; 
           <Button type="submit" size="lg" disabled={busy} className="w-full">
             {busy ? (
               <>
-                <span className="size-4 animate-spin rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground" /> Saving
+                <LoadingSpinner className="size-4" label="Saving item" /> Saving…
               </>
             ) : (
               "Save"

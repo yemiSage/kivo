@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { EditIcon, MoreIcon, PlusIcon, ShareIcon, TrashIcon } from "./icons";
 import { useToast } from "./Toast";
+import { LoadingSpinner } from "./LoadingSpinner";
 
 function NameDialog({
   open,
@@ -82,7 +83,7 @@ function NameDialog({
               Cancel
             </Button>
             <Button type="submit" disabled={pending || !name.trim()}>
-              {pending ? "Saving" : submitLabel}
+              {pending ? <><LoadingSpinner className="size-4" label="Saving vault" /> Saving…</> : submitLabel}
             </Button>
           </DialogFooter>
         </form>
@@ -193,7 +194,7 @@ export function CollectionMenu({ collection }: { collection: Collection }) {
             <Label htmlFor="vault-invite-email">Email address</Label>
             <div className="flex gap-2">
               <Input id="vault-invite-email" type="email" required value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} placeholder="friend@example.com" />
-              <Button type="submit" disabled={pending || !inviteEmail.trim()}>{pending ? "Sending" : "Send"}</Button>
+              <Button type="submit" disabled={pending || !inviteEmail.trim()}>{pending ? <><LoadingSpinner className="size-4" label="Sending invitation" /> Sending…</> : "Send"}</Button>
             </div>
           </form>
           <div className="flex items-center gap-3 text-xs text-muted-foreground before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border">or share a link</div>
@@ -220,7 +221,7 @@ export function CollectionMenu({ collection }: { collection: Collection }) {
                 })
               }
             >
-              <ShareIcon size={18} /> {pending ? "Creating" : "Create invite link"}
+              {pending ? <LoadingSpinner className="size-4" label="Creating invite link" /> : <ShareIcon size={18} />} {pending ? "Creating…" : "Create invite link"}
             </Button>
           )}
         </DialogContent>

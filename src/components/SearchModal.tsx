@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { ItemThumb, sourceLabel } from "./ItemCard";
 import { SearchIcon, XIcon } from "./icons";
+import { LoadingSpinner } from "./LoadingSpinner";
 
 export function SearchModal({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   const [query, setQuery] = useState("");
@@ -70,7 +71,7 @@ export function SearchModal({ open, onOpenChange }: { open: boolean; onOpenChang
       >
         <DialogTitle className="sr-only">Search your library</DialogTitle>
         <div className="flex h-12 items-center gap-2 rounded-2xl border bg-background px-3 shadow-lg">
-          <SearchIcon size={19} className={loading ? "animate-pulse text-foreground" : "text-muted-foreground"} />
+          {loading ? <LoadingSpinner className="size-[19px]" label="Searching" /> : <SearchIcon size={19} className="text-muted-foreground" />}
           <input
             type="search"
             value={query}
@@ -93,7 +94,7 @@ export function SearchModal({ open, onOpenChange }: { open: boolean; onOpenChang
         </div>
 
         {searching && (
-          <div className="max-h-[calc(100dvh-96px)] overflow-y-auto rounded-2xl border bg-background p-2 shadow-lg" aria-live="polite">
+          <div className="max-h-[calc(100dvh-96px)] overflow-y-auto overscroll-contain rounded-2xl border bg-background p-2 shadow-lg" aria-live="polite">
             {loading ? (
               <div className="space-y-2 p-1" aria-label="Searching">
                 {[0, 1, 2].map((item) => <div key={item} className="h-16 animate-pulse rounded-xl bg-secondary" />)}

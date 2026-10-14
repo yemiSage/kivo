@@ -156,7 +156,15 @@ export async function saveUpload(input: {
 
 export async function updateItem(
   id: string,
-  patch: { title?: string | null; notes?: string | null; tags?: string[]; collectionId?: string | null; kind?: ItemKind },
+  patch: {
+    title?: string | null;
+    notes?: string | null;
+    tags?: string[];
+    collectionId?: string | null;
+    kind?: ItemKind;
+    imagePositionX?: number;
+    imagePositionY?: number;
+  },
 ): Promise<ActionResult> {
   try {
     const { supabase } = await authed();
@@ -166,6 +174,8 @@ export async function updateItem(
     if ("tags" in patch) update.tags = normalizeTags(patch.tags);
     if ("collectionId" in patch) update.collection_id = patch.collectionId || null;
     if (patch.kind && ITEM_KINDS.includes(patch.kind)) update.kind = patch.kind;
+    if (Number.isFinite(patch.imagePositionX)) update.image_position_x = Math.round(Math.min(100, Math.max(0, patch.imagePositionX!)));
+    if (Number.isFinite(patch.imagePositionY)) update.image_position_y = Math.round(Math.min(100, Math.max(0, patch.imagePositionY!)));
 
     const { error } = await supabase.from("items").update(update).eq("id", id);
     if (error) throw error;

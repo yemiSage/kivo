@@ -54,7 +54,7 @@ export function PageHeader({
 
       <header className="mb-6">
         <div className="pt-[18px] md:pt-8">
-          <h1 className="text-xl font-semibold leading-tight tracking-tight md:text-[28px]">{title}</h1>
+          <h1 className="break-all text-xl font-semibold leading-tight tracking-tight md:break-words md:text-[28px]">{title}</h1>
           {subtitle && <p className="mt-1 text-sm text-muted-foreground md:text-[15px]">{subtitle}</p>}
         </div>
       </header>

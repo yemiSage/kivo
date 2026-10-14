@@ -16,6 +16,8 @@ export interface Item {
   platform: string | null;
   author: string | null;
   storage_path: string | null;
+  image_position_x: number;
+  image_position_y: number;
   collection_id: string | null;
   tags: string[];
   notes: string | null;

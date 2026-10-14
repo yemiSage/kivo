@@ -22,7 +22,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { CollectionPicker } from "./CollectionPicker";
 import { KIND_META } from "./ItemCard";
-import { RefreshIcon, ShareIcon, TrashIcon } from "./icons";
+import { CheckIcon, RefreshIcon, ShareIcon, TrashIcon } from "./icons";
+import { LoadingSpinner } from "./LoadingSpinner";
 import { TagInput } from "./TagInput";
 import { useToast } from "./Toast";
 
@@ -35,17 +36,26 @@ export function ItemEditor({ item, collections }: { item: ItemView; collections:
   const [title, setTitle] = useState(item.title ?? "");
   const [notes, setNotes] = useState(item.notes ?? "");
   const [kind, setKind] = useState<ItemKind>(item.kind);
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const saveRevision = useRef(0);
   const lastSaved = useRef({ title: item.title ?? "", notes: item.notes ?? "" });
   const [canShare, setCanShare] = useState(false);
   useEffect(() => setCanShare("share" in navigator), []);
 
-  const patch = (p: Parameters<typeof updateItem>[1], message?: string) =>
+  const patch = (p: Parameters<typeof updateItem>[1], message?: string) => {
+    const revision = ++saveRevision.current;
+    setSaveState("saving");
     start(async () => {
       const res = await updateItem(item.id, p);
-      if (!res.ok) return toast(res.error, "error");
+      if (!res.ok) {
+        if (revision === saveRevision.current) setSaveState("error");
+        return toast(res.error, "error");
+      }
+      if (revision === saveRevision.current) setSaveState("saved");
       if (message) toast(message);
       router.refresh();
     });
+  };
 
   const saveText = () => {
     if (title === lastSaved.current.title && notes === lastSaved.current.notes) return;
@@ -54,7 +64,7 @@ export function ItemEditor({ item, collections }: { item: ItemView; collections:
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex w-full min-w-0 flex-col gap-6">
       <CollectionPicker
         collections={collections}
         value={collectionId}
@@ -72,10 +82,10 @@ export function ItemEditor({ item, collections }: { item: ItemView; collections:
         }}
       />
 
-      <div className="grid gap-6 sm:grid-cols-[minmax(0,1fr)_180px]">
-        <div className="flex flex-col gap-2">
+      <div className="grid min-w-0 gap-6 sm:grid-cols-[minmax(0,1fr)_180px]">
+        <div className="flex min-w-0 flex-col gap-2">
           <Label htmlFor="title">Title</Label>
-          <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} onBlur={saveText} maxLength={500} />
+          <Input id="title" name="title" autoComplete="off" value={title} onChange={(e) => setTitle(e.target.value)} onBlur={saveText} maxLength={500} />
         </div>
         <div className="flex flex-col gap-2">
           <Label htmlFor="kind">Type</Label>
@@ -105,8 +115,13 @@ export function ItemEditor({ item, collections }: { item: ItemView; collections:
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="notes">Notes</Label>
-        <Textarea id="notes" rows={4} value={notes} onChange={(e) => setNotes(e.target.value)} onBlur={saveText} placeholder="Add context for later" />
-        <p className="text-xs text-muted-foreground">Saves when you click away.</p>
+        <Textarea id="notes" name="notes" autoComplete="off" rows={4} value={notes} onChange={(e) => setNotes(e.target.value)} onBlur={saveText} placeholder="Add context for later…" />
+        <p className="flex min-h-5 items-center gap-1.5 text-xs text-muted-foreground" aria-live="polite">
+          {saveState === "saving" && <><LoadingSpinner className="size-3.5" label="Saving changes" /> Saving…</>}
+          {saveState === "saved" && <><CheckIcon size={14} className="text-success" /> Saved</>}
+          {saveState === "error" && <span className="text-destructive">Couldn’t save. Try editing the field again.</span>}
+          {saveState === "idle" && "Changes save when you leave a field."}
+        </p>
       </div>
 
       <div className="flex flex-wrap gap-2 border-t pt-5">

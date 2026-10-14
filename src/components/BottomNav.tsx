@@ -27,19 +27,27 @@ export function BottomNav() {
           {TABS.map(({ href, label, Icon, primary }) => {
             const active = href === "/search" ? searchOpen : isActive(href);
             const classes = cn(
-              "flex items-center justify-center rounded-full outline-none transition active:scale-95 focus-visible:ring-2 focus-visible:ring-ring/40",
-              primary ? "size-11 bg-[#d3d2d2] text-[#353535]" : "size-10",
-              !primary && (active ? "bg-secondary text-foreground" : "text-muted-foreground"),
+              "flex h-14 w-full max-w-16 flex-col items-center justify-center gap-0.5 rounded-xl text-[10px] font-medium outline-none transition active:scale-95 focus-visible:ring-2 focus-visible:ring-ring/40",
+              active ? "text-foreground" : "text-muted-foreground",
+              primary && "text-[#353535]",
+            );
+            const content = (
+              <>
+                <span className={cn("flex size-8 items-center justify-center rounded-full", primary && "size-10 bg-[#d3d2d2]")}>
+                  <Icon size={primary ? 22 : 20} variant={active && !primary ? "Bold" : "Bulk"} />
+                </span>
+                <span>{label}</span>
+              </>
             );
             return (
               <li key={href} className="flex flex-1 justify-center">
                 {href === "/search" ? (
                   <button type="button" aria-label="Search" aria-pressed={searchOpen} className={classes} onClick={() => setSearchOpen(true)}>
-                    <Icon size={22} variant={active ? "Bold" : "Bulk"} />
+                    {content}
                   </button>
                 ) : (
                   <Link href={href} aria-label={label} aria-current={active ? "page" : undefined} className={classes}>
-                    <Icon size={22} variant={active && !primary ? "Bold" : "Bulk"} />
+                    {content}
                   </Link>
                 )}
               </li>

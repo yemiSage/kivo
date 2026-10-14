@@ -1,11 +1,12 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { env } from "@/lib/env";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LoadingSpinner } from "./LoadingSpinner";
 
 const OTP_LENGTH = 6;
 
@@ -17,6 +18,14 @@ export function LoginForm({ next }: { next: string }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const verifying = useRef(false);
+  const emailInput = useRef<HTMLInputElement>(null);
+  const codeInput = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (window.matchMedia("(min-width: 48rem)").matches) {
+      (sent ? codeInput : emailInput).current?.focus();
+    }
+  }, [sent]);
 
   const authClient = () =>
     createClient(env.supabaseUrl, env.supabaseAnonKey, {
@@ -122,12 +131,12 @@ export function LoginForm({ next }: { next: string }) {
             <Label htmlFor="email-code">6-digit code</Label>
             <Input
               id="email-code"
+              ref={codeInput}
               type="text"
               inputMode="numeric"
               autoComplete="one-time-code"
               maxLength={OTP_LENGTH}
               required
-              autoFocus
               disabled={busy}
               value={code}
               onChange={(e) => updateCode(e.target.value)}
@@ -138,7 +147,7 @@ export function LoginForm({ next }: { next: string }) {
           </div>
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           <Button type="submit" disabled={busy || code.length !== OTP_LENGTH}>
-            {busy ? "Signing in" : "Sign in"}
+            {busy ? <><LoadingSpinner className="size-4" label="Signing in" /> Signing in…</> : "Sign in"}
           </Button>
         </form>
         <div className="flex w-full items-center justify-between gap-3">
@@ -159,11 +168,11 @@ export function LoginForm({ next }: { next: string }) {
         <Label htmlFor="email">Email</Label>
         <Input
           id="email"
+          ref={emailInput}
           type="email"
           autoComplete="email"
           inputMode="email"
           required
-          autoFocus
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
@@ -176,7 +185,7 @@ export function LoginForm({ next }: { next: string }) {
         {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       </div>
       <Button type="submit" disabled={busy}>
-        {busy ? "Sending link" : "Continue"}
+        {busy ? <><LoadingSpinner className="size-4" label="Sending link" /> Sending link…</> : "Continue"}
       </Button>
     </form>
   );

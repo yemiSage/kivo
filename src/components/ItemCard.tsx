@@ -17,12 +17,28 @@ export function sourceLabel(item: Pick<ItemView, "platform" | "site_name" | "url
   return item.site_name || hostLabel(item.url) || "Upload";
 }
 
-export function ItemThumb({ item, className = "" }: { item: Pick<ItemView, "image" | "kind" | "title" | "url">; className?: string }) {
+export function ItemThumb({
+  item,
+  className = "",
+}: {
+  item: Pick<ItemView, "image" | "kind" | "title" | "url"> & Partial<Pick<ItemView, "image_position_x" | "image_position_y">>;
+  className?: string;
+}) {
   const { Icon } = KIND_META[item.kind];
   if (item.image) {
     return (
       // eslint-disable-next-line @next/next/no-img-element -- arbitrary third-party hosts
-      <img src={item.image} alt="" loading="lazy" decoding="async" referrerPolicy="no-referrer" className={cn("h-full w-full object-cover", className)} />
+      <img
+        src={item.image}
+        alt=""
+        width={640}
+        height={480}
+        loading="lazy"
+        decoding="async"
+        referrerPolicy="no-referrer"
+        style={{ objectPosition: `${item.image_position_x ?? 50}% ${item.image_position_y ?? 50}%` }}
+        className={cn("h-full w-full object-cover", className)}
+      />
     );
   }
   return (

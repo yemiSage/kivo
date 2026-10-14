@@ -1,6 +1,25 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "shadcn/tailwind.css";
+
+/* Local copies of the state variants used by our generated Radix components. */
+@custom-variant data-open {
+  &:where([data-state="open"]),
+  &:where([data-open]:not([data-open="false"])) { @slot; }
+}
+@custom-variant data-closed {
+  &:where([data-state="closed"]),
+  &:where([data-closed]:not([data-closed="false"])) { @slot; }
+}
+@custom-variant data-disabled {
+  &:where([data-disabled="true"]),
+  &:where([data-disabled]:not([data-disabled="false"])) { @slot; }
+}
+@custom-variant data-horizontal {
+  &:where([data-orientation="horizontal"]) { @slot; }
+}
+@custom-variant data-vertical {
+  &:where([data-orientation="vertical"]) { @slot; }
+}
 
 /*
  * Kivo theme: neutral monochrome, black primary, light only.
@@ -108,7 +127,6 @@
     min-height: 100dvh;
     background: transparent;
     color: var(--foreground);
-    overscroll-behavior-y: none;
   }
   body::before {
     /* The local asset is pre-blurred so first paint needs no remote fetch or live filter. */
@@ -125,6 +143,12 @@
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
+  }
+}
+
+@media (pointer: fine) {
+  html {
+    overscroll-behavior: none;
   }
 }
 

@@ -30,6 +30,9 @@ export function TagInput({ value, onChange, id = "tags" }: { value: string[]; on
         ))}
         <input
           id={id}
+          name={id}
+          autoComplete="off"
+          spellCheck={false}
           value={draft}
           onChange={(e) => (e.target.value.endsWith(",") ? commit(e.target.value) : setDraft(e.target.value))}
           onKeyDown={(e) => {
@@ -41,7 +44,7 @@ export function TagInput({ value, onChange, id = "tags" }: { value: string[]; on
             }
           }}
           onBlur={() => commit(draft)}
-          placeholder={value.length ? "" : "design, ideas, to-try"}
+          placeholder={value.length ? "" : "design, ideas, to-try…"}
           enterKeyHint="done"
           autoCapitalize="none"
           className="h-8 min-w-24 flex-1 bg-transparent px-1 text-sm outline-none placeholder:text-muted-foreground"

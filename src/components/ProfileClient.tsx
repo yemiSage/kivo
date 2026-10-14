@@ -3,6 +3,7 @@ import { useTransition } from "react";
 import { signOut } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { LogoutIcon } from "./icons";
+import { LoadingSpinner } from "./LoadingSpinner";
 
 export function SignOutButton() {
   const [pending, start] = useTransition();
@@ -18,8 +19,8 @@ export function SignOutButton() {
         })
       }
     >
-      <LogoutIcon size={18} />
-      {pending ? "Signing out" : "Sign out"}
+      {pending ? <LoadingSpinner className="size-4" label="Signing out" /> : <LogoutIcon size={18} />}
+      {pending ? "Signing out…" : "Sign out"}
     </Button>
   );
 }
