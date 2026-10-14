@@ -1,9 +1,10 @@
 "use client";
 import { useState } from "react";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 import { XIcon } from "./icons";
 
-export function TagInput({ value, onChange, id = "tags" }: { value: string[]; onChange: (tags: string[]) => void; id?: string }) {
+export function TagInput({ value, onChange, id = "tags", inputClassName }: { value: string[]; onChange: (tags: string[]) => void; id?: string; inputClassName?: string }) {
   const [draft, setDraft] = useState("");
 
   const commit = (raw: string) => {
@@ -47,7 +48,7 @@ export function TagInput({ value, onChange, id = "tags" }: { value: string[]; on
           placeholder={value.length ? "" : "design, ideas, to-try…"}
           enterKeyHint="done"
           autoCapitalize="none"
-          className="h-8 min-w-24 flex-1 bg-transparent px-1 text-sm outline-none placeholder:text-muted-foreground"
+          className={cn("h-8 min-w-24 flex-1 bg-transparent px-1 text-sm outline-none placeholder:text-muted-foreground", inputClassName)}
         />
       </div>
       <p className="text-xs text-muted-foreground">Press Enter or comma to add.</p>

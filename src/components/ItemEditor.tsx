@@ -65,17 +65,20 @@ export function ItemEditor({ item, collections }: { item: ItemView; collections:
 
   return (
     <div className="flex w-full min-w-0 flex-col gap-6">
-      <CollectionPicker
-        collections={collections}
-        value={collectionId}
-        onChange={(id) => {
-          setCollectionId(id);
-          patch({ collectionId: id }, id ? "Moved" : "Removed from vault");
-        }}
-      />
+      <div className="hidden md:block">
+        <CollectionPicker
+          collections={collections}
+          value={collectionId}
+          onChange={(id) => {
+            setCollectionId(id);
+            patch({ collectionId: id }, id ? "Moved" : "Removed from vault");
+          }}
+        />
+      </div>
 
       <TagInput
         value={tags}
+        inputClassName="text-xs md:text-sm"
         onChange={(t) => {
           setTags(t);
           patch({ tags: t });
@@ -85,7 +88,7 @@ export function ItemEditor({ item, collections }: { item: ItemView; collections:
       <div className="grid min-w-0 gap-6 sm:grid-cols-[minmax(0,1fr)_180px]">
         <div className="flex min-w-0 flex-col gap-2">
           <Label htmlFor="title">Title</Label>
-          <Input id="title" name="title" autoComplete="off" value={title} onChange={(e) => setTitle(e.target.value)} onBlur={saveText} maxLength={500} />
+          <Input id="title" name="title" autoComplete="off" value={title} onChange={(e) => setTitle(e.target.value)} onBlur={saveText} maxLength={500} className="text-xs md:text-sm" />
         </div>
         <div className="flex flex-col gap-2">
           <Label htmlFor="kind">Type</Label>
@@ -96,7 +99,7 @@ export function ItemEditor({ item, collections }: { item: ItemView; collections:
               patch({ kind: v as ItemKind });
             }}
           >
-            <SelectTrigger id="kind" className="w-full">
+            <SelectTrigger id="kind" className="w-full text-xs md:text-sm">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

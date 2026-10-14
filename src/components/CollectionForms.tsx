@@ -30,7 +30,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { EditIcon, MoreIcon, PlusIcon, ShareIcon, TrashIcon } from "./icons";
+import { EditIcon, MoreIcon, PlusIcon, ShareIcon, TrashIcon, UserAddIcon } from "./icons";
 import { useToast } from "./Toast";
 import { LoadingSpinner } from "./LoadingSpinner";
 
@@ -147,7 +147,9 @@ export function CollectionMenu({ collection }: { collection: Collection }) {
             <EditIcon size={16} /> Rename
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setMode("share")}>
-            <ShareIcon size={16} /> Invite people
+            <UserAddIcon size={16} className="md:hidden" />
+            <ShareIcon size={16} className="hidden md:block" />
+            Invite people
           </DropdownMenuItem>
           <DropdownMenuItem variant="destructive" onSelect={() => setMode("delete")}>
             <TrashIcon size={16} /> Delete

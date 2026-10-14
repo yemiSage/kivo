@@ -81,7 +81,7 @@ export function SearchModal({ open, onOpenChange }: { open: boolean; onOpenChang
             autoFocus
             autoComplete="off"
             enterKeyHint="search"
-            className="h-full min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-muted-foreground [&::-webkit-search-cancel-button]:hidden"
+            className="h-full min-w-0 flex-1 bg-transparent text-xs outline-none placeholder:text-muted-foreground md:text-base [&::-webkit-search-cancel-button]:hidden"
           />
           {query && (
             <Button type="button" variant="ghost" size="icon-sm" onClick={() => setQuery("")} aria-label="Clear search">

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 import { BrandMark } from "./BrandMark";
 import { ChevronLeftIcon, ChevronRightIcon } from "./icons";
 
@@ -14,12 +15,16 @@ export function PageHeader({
   back,
   action,
   crumbs = [],
+  titleClassName,
+  subtitleClassName,
 }: {
   title: string;
   subtitle?: ReactNode;
   back?: string;
   action?: ReactNode;
   crumbs?: Crumb[];
+  titleClassName?: string;
+  subtitleClassName?: string;
 }) {
   return (
     <>
@@ -54,8 +59,8 @@ export function PageHeader({
 
       <header className="mb-6">
         <div className="pt-[18px] md:pt-8">
-          <h1 className="break-all text-xl font-semibold leading-tight tracking-tight md:break-words md:text-[28px]">{title}</h1>
-          {subtitle && <p className="mt-1 text-sm text-muted-foreground md:text-[15px]">{subtitle}</p>}
+          <h1 className={cn("break-all text-xl font-semibold leading-tight tracking-tight md:break-words md:text-[28px]", titleClassName)}>{title}</h1>
+          {subtitle && <p className={cn("mt-1 text-sm text-muted-foreground md:text-[15px]", subtitleClassName)}>{subtitle}</p>}
         </div>
       </header>
     </>

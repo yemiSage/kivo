@@ -76,7 +76,7 @@ export function ImagePreview({
           type="button"
           variant="secondary"
           size="sm"
-          className="absolute bottom-2 left-2 bg-background/90 shadow-sm backdrop-blur"
+          className="absolute bottom-2 left-2 hidden bg-background/90 shadow-sm backdrop-blur md:inline-flex"
           onClick={() => setAdjusting((value) => !value)}
         >
           {pending ? <LoadingSpinner className="size-4" label="Saving focal point" /> : <EditIcon size={14} />}

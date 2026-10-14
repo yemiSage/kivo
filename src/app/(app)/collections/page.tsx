@@ -43,7 +43,7 @@ export default async function CollectionsPage({ searchParams }: { searchParams: 
                   )}
                 </div>
                 <div className="flex items-center justify-between gap-2 px-1.5 pb-1.5 pt-3">
-                  <p className="truncate text-[15px] font-medium">{c.name}</p>
+                  <p className="truncate text-[13px] font-medium md:text-[15px]">{c.name}</p>
                   <span className="shrink-0 rounded-md bg-secondary px-1.5 py-0.5 text-xs font-medium tabular-nums text-muted-foreground">{c.item_count}</span>
                 </div>
               </Link>

@@ -39,6 +39,8 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
         }
         back="/"
         crumbs={[{ label: "Library", href: "/" }, { label: sourceLabel(item) }]}
+        titleClassName="text-base md:text-[28px]"
+        subtitleClassName="text-xs md:text-[15px]"
         action={
           item.url && (
             <Button asChild className="hidden md:inline-flex">

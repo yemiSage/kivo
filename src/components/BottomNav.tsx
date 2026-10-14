@@ -36,7 +36,7 @@ export function BottomNav() {
                 <span className={cn("flex size-8 items-center justify-center rounded-full", primary && "size-10 bg-[#d3d2d2]")}>
                   <Icon size={primary ? 22 : 20} variant={active && !primary ? "Bold" : "Bulk"} />
                 </span>
-                <span>{label}</span>
+                <span className={primary ? "sr-only" : undefined}>{label}</span>
               </>
             );
             return (

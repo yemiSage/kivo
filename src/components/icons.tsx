@@ -32,6 +32,7 @@ import {
   TickCircle,
   Trash,
   User,
+  UserAdd,
   VideoPlay,
   Warning2,
   Wifi,
@@ -63,6 +64,7 @@ export const FolderAddIcon = bulk(FolderAdd);
 export const PlusIcon = bulk(Add);
 export const SearchIcon = bulk(SearchNormal1);
 export const UserIcon = bulk(User);
+export const UserAddIcon = bulk(UserAdd);
 export const LinkIcon = bulk(Link21);
 export const ImageIcon = bulk(Gallery);
 export const VideoIcon = bulk(VideoPlay);
