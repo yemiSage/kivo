@@ -137,7 +137,7 @@
     pointer-events: none;
     background:
       linear-gradient(rgb(255 255 255 / 0.08), rgb(255 255 255 / 0.08)),
-      url("/kivo-canvas-v1.webp") center / cover no-repeat,
+      url("/kivo-canvas-v2.webp") center / cover no-repeat,
       var(--canvas);
   }
   button:not(:disabled),
@@ -180,7 +180,7 @@
   pointer-events: none;
   background:
     linear-gradient(rgb(255 255 255 / 0.08), rgb(255 255 255 / 0.08)),
-    url("/kivo-canvas-v1.webp") center / cover no-repeat,
+    url("/kivo-canvas-v2.webp") center / cover no-repeat,
     var(--canvas);
 }
 

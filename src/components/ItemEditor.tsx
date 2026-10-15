@@ -53,7 +53,7 @@ export function ItemEditor({ item, collections }: { item: ItemView; collections:
       }
       if (revision === saveRevision.current) setSaveState("saved");
       if (message) toast(message);
-      router.refresh();
+      // updateItem already revalidates the layout in its action response.
     });
   };
 
@@ -141,7 +141,6 @@ export function ItemEditor({ item, collections }: { item: ItemView; collections:
               start(async () => {
                 const res = await refreshPreview(item.id);
                 toast(res.ok ? "Preview refreshed" : res.error, res.ok ? "success" : "error");
-                if (res.ok) router.refresh();
               })
             }
           >

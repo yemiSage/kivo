@@ -26,6 +26,7 @@ import {
   More,
   Refresh2,
   SearchNormal1,
+  Setting2,
   Share,
   ShieldTick,
   SidebarLeft,
@@ -63,6 +64,7 @@ export const FolderIcon = bulk(Folder2);
 export const FolderAddIcon = bulk(FolderAdd);
 export const PlusIcon = bulk(Add);
 export const SearchIcon = bulk(SearchNormal1);
+export const SettingsIcon = bulk(Setting2);
 export const UserIcon = bulk(User);
 export const UserAddIcon = bulk(UserAdd);
 export const LinkIcon = bulk(Link21);

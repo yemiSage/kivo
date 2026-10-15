@@ -1,8 +1,12 @@
 node_modules
 .next
 out
-.env*.local
-.env
+.env*
+!.env.example
+*.log
 *.tsbuildinfo
 next-env.d.ts
 .vercel
+.DS_Store
+Thumbs.db
+coverage

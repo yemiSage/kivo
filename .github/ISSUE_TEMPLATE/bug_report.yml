@@ -1,0 +1,35 @@
+name: Bug report
+description: Report a reproducible problem using non-sensitive test data.
+body:
+  - type: markdown
+    attributes:
+      value: Do not post vulnerabilities, credentials, signed URLs or personal content. Read SECURITY.md for private reporting.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Explain expected and actual behaviour.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Use minimal test data you own; redact screenshots and logs.
+    validations:
+      required: true
+  - type: input
+    id: revision
+    attributes:
+      label: Revision / setup
+      description: Commit, Node version and relevant applied migration numbers. No credentials.
+  - type: input
+    id: device
+    attributes:
+      label: Device / browser
+      description: OS, browser/version, viewport and whether this is an installed PWA.
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Additional evidence
+      description: Redacted errors/screenshots, frequency and attempted troubleshooting.

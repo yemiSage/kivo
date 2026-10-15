@@ -1,0 +1,22 @@
+name: Feature request
+description: Propose a focused improvement.
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or user need
+      description: Who is affected and what are they trying to accomplish?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed improvement
+      description: Include alternatives, scope and relevant mobile/desktop behaviour.
+    validations:
+      required: true
+  - type: textarea
+    id: considerations
+    attributes:
+      label: Considerations
+      description: Accessibility, privacy, storage costs, configuration or migration implications.

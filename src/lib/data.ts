@@ -1,10 +1,13 @@
 import "server-only";
+import { createHash } from "node:crypto";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Collection, CollectionWithCount, Item, ItemKind, ItemView } from "./types";
 import { ITEM_KINDS } from "./types";
+import { SignedUrlCache } from "./signed-url-cache";
 
 export const MEDIA_BUCKET = "media";
 const SIGNED_URL_TTL = 60 * 60 * 6;
+const signedUrlCache = new SignedUrlCache();
 
 export function parseKind(v: string | string[] | undefined): ItemKind | null {
   const s = Array.isArray(v) ? v[0] : v;
@@ -13,11 +16,28 @@ export function parseKind(v: string | string[] | undefined): ItemKind | null {
 
 /** Attach a displayable image URL: signed URL for uploads, else the preview thumbnail. */
 export async function withImages(supabase: SupabaseClient, items: Item[]): Promise<ItemView[]> {
-  const paths = items.map((i) => i.storage_path).filter((p): p is string => Boolean(p));
+  const paths = [...new Set(items.map((i) => i.storage_path).filter((p): p is string => Boolean(p)))];
   const signed = new Map<string, string>();
   if (paths.length) {
-    const { data } = await supabase.storage.from(MEDIA_BUCKET).createSignedUrls(paths, SIGNED_URL_TTL);
-    data?.forEach((d) => d.path && d.signedUrl && signed.set(d.path, d.signedUrl));
+    // The rows above have already passed RLS. Scope cached URLs to the current
+    // access token, so sessions never reuse each other's signed URLs.
+    // getSession supplies a cache key only; it is not an authorization check.
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token;
+    const scope = token ? createHash("sha256").update(token).digest("hex") : null;
+    const missing = paths.filter((path) => {
+      const cached = scope ? signedUrlCache.get(scope, path) : undefined;
+      if (cached) signed.set(path, cached);
+      return !cached;
+    });
+    if (missing.length) {
+      const { data } = await supabase.storage.from(MEDIA_BUCKET).createSignedUrls(missing, SIGNED_URL_TTL);
+      data?.forEach((d) => {
+        if (!d.path || !d.signedUrl) return;
+        signed.set(d.path, d.signedUrl);
+        if (scope) signedUrlCache.set(scope, d.path, d.signedUrl);
+      });
+    }
   }
   return items.map((i) => ({
     ...i,
@@ -27,7 +47,7 @@ export async function withImages(supabase: SupabaseClient, items: Item[]): Promi
 
 export async function listItems(
   supabase: SupabaseClient,
-  opts: { kind?: ItemKind | null; collectionId?: string | null; limit?: number } = {},
+  opts: { kind?: ItemKind | null; collectionId?: string | null; tag?: string | null; limit?: number } = {},
 ): Promise<ItemView[]> {
   let q = supabase
     .from("items")
@@ -36,6 +56,7 @@ export async function listItems(
     .limit(opts.limit ?? 120);
   if (opts.kind) q = q.eq("kind", opts.kind);
   if (opts.collectionId) q = q.eq("collection_id", opts.collectionId);
+  if (opts.tag) q = q.contains("tags", [opts.tag]);
   const { data, error } = await q;
   if (error) throw error;
   return withImages(supabase, (data ?? []) as Item[]);

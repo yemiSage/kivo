@@ -1,8 +1,9 @@
-import Link from "next/link";
+import { IntentLink as Link } from "./IntentLink";
 import type { ItemKind, ItemView, Platform } from "@/lib/types";
 import { hostLabel, PLATFORM_LABEL } from "@/lib/url";
 import { cn } from "@/lib/utils";
 import { ArticleIcon, ImageIcon, LinkIcon, PostIcon, VideoIcon, type IconProps } from "./icons";
+import { MediaThumbnail } from "./MediaThumbnail";
 
 export const KIND_META: Record<ItemKind, { label: string; plural: string; Icon: (p: IconProps) => React.ReactNode }> = {
   image: { label: "Image", plural: "Images", Icon: ImageIcon },
@@ -20,22 +21,18 @@ export function sourceLabel(item: Pick<ItemView, "platform" | "site_name" | "url
 export function ItemThumb({
   item,
   className = "",
+  eager = false,
 }: {
   item: Pick<ItemView, "image" | "kind" | "title" | "url"> & Partial<Pick<ItemView, "image_position_x" | "image_position_y">>;
   className?: string;
+  eager?: boolean;
 }) {
   const { Icon } = KIND_META[item.kind];
   if (item.image) {
     return (
-      // eslint-disable-next-line @next/next/no-img-element -- arbitrary third-party hosts
-      <img
+      <MediaThumbnail
         src={item.image}
-        alt=""
-        width={640}
-        height={480}
-        loading="lazy"
-        decoding="async"
-        referrerPolicy="no-referrer"
+        eager={eager}
         style={{ objectPosition: `${item.image_position_x ?? 50}% ${item.image_position_y ?? 50}%` }}
         className={cn("h-full w-full object-cover", className)}
       />
@@ -49,7 +46,7 @@ export function ItemThumb({
   );
 }
 
-export function ItemCard({ item }: { item: ItemView }) {
+export function ItemCard({ item, eager = false }: { item: ItemView; eager?: boolean }) {
   const { Icon, label } = KIND_META[item.kind];
   return (
     <Link
@@ -57,7 +54,7 @@ export function ItemCard({ item }: { item: ItemView }) {
       className="group block rounded-2xl border bg-card p-2 outline-none transition hover:border-black/10 hover:shadow-[0_8px_24px_-12px_rgb(40_40_30/0.18)] focus-visible:ring-2 focus-visible:ring-ring/40 active:scale-[0.99]"
     >
       <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-secondary">
-        <ItemThumb item={item} className="transition duration-500 group-hover:scale-[1.03]" />
+        <ItemThumb item={item} eager={eager} className="transition duration-500 group-hover:scale-[1.03]" />
       </div>
       <div className="px-1.5 pb-1.5 pt-3">
         <p className="truncate text-xs font-medium leading-snug md:text-[15px]">{item.title || hostLabel(item.url) || "Untitled"}</p>
@@ -66,7 +63,7 @@ export function ItemCard({ item }: { item: ItemView }) {
             <Icon size={13} />
             {label}
           </span>
-          <span className="truncate">{sourceLabel(item)}</span>
+          <span className="hidden truncate md:inline">{sourceLabel(item)}</span>
         </div>
       </div>
     </Link>
@@ -78,7 +75,7 @@ export function ItemGrid({ items }: { items: ItemView[] }) {
     <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
       {items.map((item, i) => (
         <li key={item.id} className="animate-rise" style={{ animationDelay: `${Math.min(i, 12) * 30}ms` }}>
-          <ItemCard item={item} />
+          <ItemCard item={item} eager={i < 2} />
         </li>
       ))}
     </ul>

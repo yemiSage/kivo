@@ -1,22 +1,26 @@
+import { Suspense } from "react";
 import { BottomNav } from "@/components/BottomNav";
 import { Sidebar } from "@/components/Sidebar";
 import { env } from "@/lib/env";
-import { getServerSupabase } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/supabase/server";
 import type { Collection } from "@/lib/types";
 
-export default async function AppLayout({ children }: { children: React.ReactNode }) {
+async function AppSidebar() {
   let email: string | null = null;
   let collections: Pick<Collection, "id" | "name">[] = [];
   if (env.configured) {
-    const supabase = await getServerSupabase();
-    const { data } = await supabase.auth.getUser();
-    if (data.user) {
-      email = data.user.email ?? null;
+    const { supabase, user } = await getAuthenticatedUser();
+    if (user) {
+      email = user.email ?? null;
       const res = await supabase.from("collections").select("id, name").order("created_at");
       collections = res.data ?? [];
     }
   }
 
+  return <Sidebar email={email} collections={collections} />;
+}
+
+export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     // Mobile is edge-to-edge; desktop keeps the floating framed workspace.
     <div className="app-frame flex h-dvh overflow-hidden">
@@ -24,7 +28,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         Skip to content
       </a>
       <div className="flex min-h-0 w-full overflow-hidden bg-shell md:rounded-3xl md:border md:border-white/70 md:shadow-[0_1px_2px_rgb(40_40_30/0.04),0_12px_40px_-12px_rgb(40_40_30/0.14)]">
-        <Sidebar email={email} collections={collections} />
+        <Suspense fallback={<Sidebar email={null} collections={[]} />}>
+          <AppSidebar />
+        </Suspense>
         <div className="flex min-h-0 min-w-0 flex-1 flex-col">
           {!env.configured && (
             <div className="border-b bg-secondary px-4 py-2 text-center text-sm text-muted-foreground">

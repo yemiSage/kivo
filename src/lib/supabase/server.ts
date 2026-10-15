@@ -21,10 +21,16 @@ export const getServerSupabase = cache(async () => {
   });
 });
 
-/** Returns the signed-in user and a client, or redirects to /login. */
-export const requireUser = cache(async (next?: string) => {
+/** One verified Auth request shared by the layout and page in this render. */
+export const getAuthenticatedUser = cache(async () => {
   const supabase = await getServerSupabase();
   const { data } = await supabase.auth.getUser();
-  if (!data.user) redirect(next ? `/login?next=${encodeURIComponent(next)}` : "/login");
   return { supabase, user: data.user };
 });
+
+/** Redirect destinations must not become separate keys for the auth lookup. */
+export async function requireUser(next?: string) {
+  const { supabase, user } = await getAuthenticatedUser();
+  if (!user) redirect(next ? `/login?next=${encodeURIComponent(next)}` : "/login");
+  return { supabase, user };
+}

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { IntentLink as Link } from "@/components/IntentLink";
 import type { Metadata } from "next";
 import { requireUser } from "@/lib/supabase/server";
 import { listCollectionsWithCounts } from "@/lib/data";

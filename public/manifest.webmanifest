@@ -33,6 +33,6 @@
   },
   "shortcuts": [
     { "name": "Save a link", "short_name": "Save", "url": "/save", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
-    { "name": "Search", "url": "/search", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
+    { "name": "Search", "url": "/?search=1", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
   ]
 }

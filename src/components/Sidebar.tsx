@@ -1,7 +1,7 @@
 "use client";
-import Link from "next/link";
+import { IntentLink as Link } from "./IntentLink";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { signOut } from "@/app/actions";
 import type { Collection } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -54,6 +54,9 @@ function NavLink({ href, active, children }: { href: string; active: boolean; ch
 export function Sidebar({ email, collections }: { email: string | null; collections: Pick<Collection, "id" | "name">[] }) {
   const pathname = usePathname();
   const [searchOpen, setSearchOpen] = useState(false);
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("search") === "1" && window.matchMedia("(min-width: 48rem)").matches) setSearchOpen(true);
+  }, []);
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`));
 
   return (

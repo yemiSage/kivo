@@ -1,0 +1,21 @@
+{
+  "files": { "includes": ["src/**", "tests/**", "scripts/**", "next.config.ts"] },
+  "css": { "parser": { "tailwindDirectives": true } },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "none",
+      "correctness": {
+        "noDuplicateAttributes": "error",
+        "noUnreachable": "error",
+        "useValidTypeof": "error"
+      },
+      "suspicious": {
+        "noDuplicateObjectKeys": "error",
+        "noAssignInExpressions": "error",
+        "noDebugger": "error"
+      }
+    }
+  },
+  "assist": { "enabled": false }
+}

@@ -20,11 +20,12 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  // Refreshes the auth token if needed. Do not put logic between createServerClient and getUser.
-  const { data } = await supabase.auth.getUser();
+  // Verify the JWT and refresh if needed. Asymmetric keys use cached JWKS;
+  // legacy symmetric keys are still verified by the Auth server.
+  const { data, error } = await supabase.auth.getClaims();
   const { pathname, search } = request.nextUrl;
 
-  if (!data.user && !PUBLIC_PATHS.some((p) => pathname.startsWith(p)) && !pathname.startsWith("/api")) {
+  if ((error || !data?.claims?.sub) && !PUBLIC_PATHS.some((p) => pathname.startsWith(p)) && !pathname.startsWith("/api")) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     // Preserve shared content through the sign-in detour.

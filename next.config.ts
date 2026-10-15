@@ -19,6 +19,16 @@ const contentSecurityPolicy = [
 ].filter(Boolean).join("; ");
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: process.env.NEXT_PUBLIC_SUPABASE_URL ? [{
+      protocol: "https",
+      hostname: new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname,
+      port: "",
+      pathname: "/storage/v1/object/sign/media/**",
+    }] : [],
+    // Private signed uploads need a token query string; only the project's media path is allowed.
+    minimumCacheTTL: 300,
+  },
   async rewrites() {
     const adminHost = process.env.ADMIN_HOST?.trim() || "adminkivo-save.vercel.app";
     return [
@@ -32,7 +42,7 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: "/kivo-canvas-v1.webp",
+        source: "/kivo-canvas-v2.webp",
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
       },
       {

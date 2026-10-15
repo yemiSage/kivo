@@ -1,7 +1,7 @@
 "use client";
-import Link from "next/link";
+import { IntentLink as Link } from "./IntentLink";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { SearchModal } from "./SearchModal";
 import { FolderIcon, HomeIcon, PlusIcon, SearchIcon, UserIcon } from "./icons";
@@ -18,12 +18,15 @@ const TABS = [
 export function BottomNav() {
   const pathname = usePathname();
   const [searchOpen, setSearchOpen] = useState(false);
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("search") === "1" && window.matchMedia("(max-width: 47.999rem)").matches) setSearchOpen(true);
+  }, []);
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
   return (
     <>
-      <nav aria-label="Primary" className="sticky bottom-0 z-40 shrink-0 bg-shell px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2 md:hidden">
-        <ul className="mx-auto flex h-16 w-full items-center justify-around rounded-2xl border border-black/[0.04] bg-secondary/70 px-2">
+      <nav aria-label="Primary" className="sticky bottom-0 z-40 shrink-0 bg-white px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2 md:hidden">
+        <ul className="mx-auto flex h-16 w-full items-center justify-around rounded-none border-0 bg-white px-2">
           {TABS.map(({ href, label, Icon, primary }) => {
             const active = href === "/search" ? searchOpen : isActive(href);
             const classes = cn(

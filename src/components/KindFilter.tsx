@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { IntentLink as Link } from "./IntentLink";
 import type { ItemKind } from "@/lib/types";
 import { ITEM_KINDS } from "@/lib/types";
 import { cn } from "@/lib/utils";
