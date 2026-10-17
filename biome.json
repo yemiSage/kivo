@@ -1,5 +1,5 @@
 {
-  "files": { "includes": ["src/**", "tests/**", "scripts/**", "next.config.ts"] },
+  "files": { "includes": ["src/**", "tests/**", "scripts/**", "extensions/**", "next.config.ts"] },
   "css": { "parser": { "tailwindDirectives": true } },
   "linter": {
     "enabled": true,

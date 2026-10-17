@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Kivo extension settings</title>
+    <link rel="icon" href="icons/icon-32.png" type="image/png">
+    <link rel="stylesheet" href="options.css">
+    <script type="module" src="options.mjs"></script>
+  </head>
+  <body>
+    <main>
+      <header><img src="icons/icon-48.png" alt="" width="36" height="36"><span>Kivo</span></header>
+      <h1>A little closer to everything worth keeping.</h1>
+      <p>Click Kivo in your toolbar or right-click a link to save it. Kivo opens in a new tab and handles sign-in, saving and organisation.</p>
+      <form id="settings">
+        <label for="app-origin">Your Kivo address</label>
+        <input id="app-origin" name="app-origin" type="url" autocomplete="off" spellcheck="false" required aria-describedby="origin-help status" placeholder="https://kivo-save.vercel.app">
+        <p id="origin-help">Use the default Kivo address, your own HTTPS deployment, or localhost for development. Only use an app you trust: links you save are sent there.</p>
+        <div class="actions"><button type="submit">Save settings</button><button type="button" id="reset" class="secondary">Use default</button></div>
+        <p id="status" role="status" aria-live="polite"></p>
+      </form>
+      <footer>No browsing-history collection. No page-content access. The extension stores only your Kivo address on this device. URLs and page titles are sent to that app only when you choose to save. Sign-in and saved data stay with your Kivo app and backend.</footer>
+    </main>
+  </body>
+</html>

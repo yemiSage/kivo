@@ -20,6 +20,7 @@ Start with this README, then read [CONTRIBUTING.md](CONTRIBUTING.md) to contribu
 - [Search behaviour](#search-behaviour)
 - [Uploads and storage](#uploads-and-storage)
 - [PWA, offline behaviour and sharing](#pwa-offline-behaviour-and-sharing)
+- [Chrome extension starter](#chrome-extension-starter)
 - [Deployment and updates](#deployment-and-updates)
 - [Security and privacy](#security-and-privacy)
 - [Testing](#testing)
@@ -41,6 +42,7 @@ Start with this README, then read [CONTRIBUTING.md](CONTRIBUTING.md) to contribu
 | Images | Cropped mobile previews, full-screen viewing and desktop focal-point adjustment. |
 | Mobile layout | Edge-to-edge signed-in shell, in-shell bottom navigation and safe areas; scenic background on authentication screens. |
 | Offline | Best-effort caching of previously visited documents/images and an offline fallback. |
+| Chrome extension | Unpacked desktop MV3 starter: toolbar, shortcut and page/link context-menu handoff to the existing save screen. Not a published store release. |
 | Administration | Optional server-protected dashboard for account and storage metrics. |
 
 Current boundaries:
@@ -272,6 +274,7 @@ Admin quota values are display-only. Billing, enforced per-user quotas and autom
 | `npm run lint` | Explicit Biome correctness rules in `biome.json`; not a full style/accessibility audit. |
 | `npm run typecheck` | TypeScript check without emitted app code. |
 | `npm test` | Credential-free search, redirect and cache regression tests. |
+| `npm run test:extension:browser` | Isolated Chromium extension smoke test; install matching Chromium with `npx playwright install chromium` first. No real accounts/saves. |
 | `npm run build` | Production build; does not apply SQL or verify email delivery. |
 | `npm start` | Serve an existing production build. |
 | `npm start -- -p 5000` | Serve it on another port. |
@@ -279,6 +282,7 @@ Admin quota values are display-only. Billing, enforced per-user quotas and autom
 | `npm run check:secrets` | Redacted credential-pattern scan of tracked/non-ignored working files. |
 | `npm run check:secrets:history` | Also check reachable history blobs on local Git refs. |
 | `npm run prepare:background -- /path/to/generated-image.png` | Generate the optimised WebP from an input image. Refuses an existing output unless `--force` is passed. |
+| `npm run prepare:extension-icons` | Rasterise the existing bookmark SVG into the extension's PNG sizes. |
 | `npm audit` | Current dependency advisories; results change over time. |
 
 Before a PR:
@@ -391,6 +395,12 @@ Choose another port if development already occupies the default. Use an HTTPS de
 - Manifest changes can require reinstalling the PWA to refresh OS shortcuts/share registration.
 
 See [docs/SHARING.md](docs/SHARING.md) for platform notes and real-device tests. Browser support changes: verify your target devices instead of assuming universal compatibility.
+
+## Chrome extension starter
+
+The desktop extension is in [extensions/chrome](extensions/chrome/README.md). Load that folder with **Load unpacked** at `chrome://extensions`, then pin its icon. Toolbar click, `Alt+Shift+K` and page/link right-click actions open the existing Kivo save flow in a new tab. Sign in through the web app in the same Chrome profile. The extension's Options page can target a trusted self-hosted HTTPS origin or localhost for development.
+
+The starter stores no database credentials and has no persistent access to all websites. Opening a tab is not a save receipt; Kivo confirms success/failure. It is not published to the Chrome Web Store. Read its setup, [privacy notes](extensions/chrome/PRIVACY.md), validation limits and manual acceptance checklist before use. A full authenticated vault/tag popup is future work, not included in this handoff-only version.
 
 ## Deployment and updates
 

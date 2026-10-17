@@ -21,6 +21,7 @@ Kivo's MIT license does not relicense dependencies, fonts, historical photograph
 | `tailwindcss`, `@tailwindcss/postcss` | 4.3.3 | MIT |
 | `typescript` | 7.0.2 | Apache-2.0 |
 | `sharp` | 0.35.5 | Apache-2.0 |
+| `playwright`, `playwright-core` (development browser tests) | 1.62.1 | Apache-2.0 |
 | `@types/node` | 26.6.5 | MIT |
 | `@types/react`, `@types/react-dom` | 19.3.0 | MIT |
 

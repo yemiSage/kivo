@@ -14,13 +14,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "biome lint src tests scripts next.config.ts --error-on-warnings",
+    "lint": "biome lint src tests scripts extensions next.config.ts --error-on-warnings",
     "typecheck": "tsc --noEmit",
     "test": "node --test tests/*.test.mjs",
+    "test:extension:browser": "node tests/browser/extension-smoke.mjs",
     "check:docs": "node scripts/check-docs.mjs",
     "check:secrets": "node scripts/check-secrets.mjs",
     "check:secrets:history": "node scripts/check-secrets.mjs --history",
-    "prepare:background": "node scripts/prepare-background.mjs"
+    "prepare:background": "node scripts/prepare-background.mjs",
+    "prepare:extension-icons": "node scripts/prepare-extension-icons.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -43,6 +45,7 @@
     "@types/node": "^26.6.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "playwright": "1.62.1",
     "sharp": "^0.35.5",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2"
