@@ -3,6 +3,7 @@ import Link from "next/link";
 import { BrandMark } from "@/components/BrandMark";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PlatformStorageControls, UserStorageControls } from "@/components/AdminStorageControls";
 import { getAdminDashboard, requireSuperAdmin } from "@/lib/admin";
 
 export const metadata: Metadata = { title: "Superadmin" };
@@ -37,8 +38,9 @@ function MetricCard({ label, value, detail }: { label: string; value: string; de
 export default async function AdminPage({ searchParams }: { searchParams: Promise<{ q?: string | string[] }> }) {
   const [{ email }, params] = await Promise.all([requireSuperAdmin(), searchParams]);
   const q = typeof params.q === "string" ? params.q : "";
-  const { overview, users } = await getAdminDashboard(q);
-  const storagePercent = Math.min(100, (overview.storageBytes / overview.storageQuotaBytes) * 100);
+  const { overview, users, settings, userControls, controlsReady, audit, r2Bytes } = await getAdminDashboard(q);
+  const r2Capacity = settings.totalQuotaGb * 1000000000;
+  const storagePercent = Math.min(100, (r2Bytes / r2Capacity) * 100);
 
   return (
     <main className="min-h-dvh px-4 py-6 md:px-8 md:py-10">
@@ -47,7 +49,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
           <div className="flex items-center gap-3">
             <BrandMark size={38} />
             <div>
-              <p className="text-lg font-semibold tracking-tight">Kivo Superadmin</p>
+              <h1 className="text-lg font-semibold tracking-tight">Kivo Superadmin</h1>
               <p className="text-sm text-muted-foreground">Signed in as {email}</p>
             </div>
           </div>
@@ -59,8 +61,8 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
         <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <MetricCard label="Total users" value={overview.totalUsers.toLocaleString()} detail={`${overview.newUsers7d.toLocaleString()} joined in the last 7 days`} />
           <MetricCard label="Saved items" value={overview.itemCount.toLocaleString()} detail={`${overview.uploadCount.toLocaleString()} uploaded images`} />
-          <MetricCard label="Storage used" value={formatBytes(overview.storageBytes)} detail={`of ${formatBytes(overview.storageQuotaBytes)} configured capacity`} />
-          <MetricCard label="Storage remaining" value={formatBytes(Math.max(0, overview.storageQuotaBytes - overview.storageBytes))} detail={`${storagePercent.toFixed(1)}% currently used`} />
+          <MetricCard label="Total media storage" value={formatBytes(overview.storageBytes)} detail="Supabase and R2 combined" />
+          <MetricCard label="R2 storage remaining" value={controlsReady ? formatBytes(Math.max(0, r2Capacity - r2Bytes)) : "—"} detail={controlsReady ? `${settings.totalQuotaGb} GB configured ceiling` : "Storage controls need setup"} />
         </section>
 
         <section className="mt-4 rounded-2xl border bg-card p-5" aria-label="Storage usage">
@@ -97,6 +99,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
                   <th className="px-4 py-3 font-medium">Joined</th>
                   <th className="px-4 py-3 font-medium">Last sign-in</th>
                   <th className="px-4 py-3 font-medium">Last save</th>
+                  <th className="px-4 py-3 font-medium">Upload access & quota</th>
                 </tr>
               </thead>
               <tbody className="divide-y">
@@ -113,16 +116,28 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
                     <td className="px-4 py-4 text-muted-foreground">{formatDate(user.joinedAt)}</td>
                     <td className="px-4 py-4 text-muted-foreground">{formatDate(user.lastSignInAt)}</td>
                     <td className="px-4 py-4 text-muted-foreground">{formatDate(user.lastSavedAt)}</td>
+                    <td className="px-4 py-4">
+                      {controlsReady ? <UserStorageControls userId={user.userId} email={user.email} enabled={userControls.find(c => c.user_id === user.userId)?.uploads_enabled ?? true} quotaMb={userControls.find(c => c.user_id === user.userId)?.quota_bytes == null ? null : Number(userControls.find(c => c.user_id === user.userId)?.quota_bytes) / 1048576} defaultQuotaMb={settings.userQuotaMb} /> : <span className="text-xs text-muted-foreground">Setup required</span>}
+                    </td>
                   </tr>
                 ))}
                 {!users.length && (
                   <tr>
-                    <td colSpan={8} className="px-5 py-12 text-center text-muted-foreground">No users matched this search.</td>
+                    <td colSpan={9} className="px-5 py-12 text-center text-muted-foreground">No users matched this search.</td>
                   </tr>
                 )}
               </tbody>
             </table>
           </div>
+        </section>
+        <section className="mt-6 rounded-3xl border bg-shell p-5 md:p-6" aria-labelledby="platform-settings">
+          <h2 id="platform-settings" className="mb-1 text-lg font-semibold">Platform settings</h2>
+          <p className="mb-5 text-sm text-muted-foreground">{controlsReady ? `R2 storage: ${formatBytes(r2Bytes)} used.` : "Storage controls need setup."} Changes apply to new uploads; existing files stay intact.</p>
+          {controlsReady ? <PlatformStorageControls key={JSON.stringify(settings)} enabled={settings.enabled} userQuotaMb={settings.userQuotaMb} totalQuotaGb={settings.totalQuotaGb} /> : <p className="text-sm text-muted-foreground">Apply the admin storage controls migration to enable management settings.</p>}
+        </section>
+        <section className="mt-6 rounded-3xl border bg-shell p-5 md:p-6" aria-labelledby="admin-activity">
+          <h2 id="admin-activity" className="mb-3 text-lg font-semibold">Recent admin activity</h2>
+          {audit.length ? <ul className="divide-y">{audit.map(entry => <li key={entry.id} className="py-3 text-sm"><span className="font-medium">{entry.action === "platform_storage" ? "Platform settings updated" : "User storage updated"}</span><p className="mt-1 break-all text-xs text-muted-foreground">{entry.target_user_id ? users.find(user=>user.userId===entry.target_user_id)?.email ?? entry.target_user_id : "All users"} · {new Date(entry.created_at).toLocaleString("en-NG", { timeZone: "Africa/Lagos" })} · By {users.find(user=>user.userId===entry.actor_id)?.email ?? entry.actor_id}</p></li>)}</ul> : <p className="text-sm text-muted-foreground">No recorded changes yet.</p>}
         </section>
       </div>
     </main>

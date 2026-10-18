@@ -258,7 +258,7 @@ This integration can incur provider charges. Explain the external processing in 
 
 ### Superadmin
 
-Apply `0005`, set `SUPERADMIN_EMAILS` and `SUPABASE_SERVICE_ROLE_KEY`, sign in as an allowlisted account and open `/admin`. Ordinary users receive a not-found response. Metrics include personal account identifiers and activity/storage counts; protect screenshots and logs.
+Apply `0005` (metrics) and `0010` (storage management), set `SUPERADMIN_EMAILS` and `SUPABASE_SERVICE_ROLE_KEY`, sign in as an allowlisted account and open `/admin`. Ordinary users receive a not-found response. Metrics include personal account identifiers and activity/storage counts; protect screenshots and logs.
 
 For a dedicated admin hostname, attach it to the deployment, set `ADMIN_HOST`, allow its auth callback and test sign-in there. Separate origins do not automatically share a session. The admin login returns to `/admin`, and `Open Kivo` opens the separate main app at `https://kivo-save.vercel.app/`.
 

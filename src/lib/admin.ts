@@ -84,9 +84,12 @@ export async function getAdminDashboard(search = "") {
   const admin = getAdminClient();
   const cleanSearch = search.trim().slice(0, 200);
 
-  const [overviewResult, usersResult] = await Promise.all([
+  const [overviewResult, usersResult, settingsResult, auditResult, r2Result] = await Promise.all([
     admin.rpc("superadmin_overview"),
     admin.rpc("superadmin_user_metrics", { search_term: cleanSearch || null, result_limit: 100, result_offset: 0 }),
+    admin.from("platform_storage_settings").select("*").eq("id",1).maybeSingle(),
+    admin.from("admin_storage_audit").select("id, actor_id, target_user_id, action, created_at").order("id", { ascending: false }).limit(10),
+    admin.rpc("r2_storage_usage"),
   ]);
 
   if (overviewResult.error) throw overviewResult.error;
@@ -115,5 +118,12 @@ export async function getAdminDashboard(search = "") {
     lastSavedAt: row.last_saved_at,
   }));
 
-  return { overview, users, search: cleanSearch };
+  const controlsResult = users.length ? await admin.from("user_storage_controls").select("user_id,quota_bytes,uploads_enabled").in("user_id", users.map(user => user.userId)) : { data: [], error: null };
+  return { overview, users, search: cleanSearch,
+    controlsReady: !settingsResult.error && Boolean(settingsResult.data) && !controlsResult.error && !auditResult.error && !r2Result.error,
+    settings: { enabled: settingsResult.data?.uploads_enabled ?? true, userQuotaMb: number(settingsResult.data?.default_user_quota_bytes ?? 104857600) / 1048576, totalQuotaGb: number(settingsResult.data?.total_quota_bytes ?? 9000000000) / 1000000000 },
+    userControls: (controlsResult.data ?? []) as { user_id: string; quota_bytes: number | null; uploads_enabled: boolean }[],
+    audit: (auditResult.data ?? []) as { id: number; actor_id: string; target_user_id: string | null; action: string; created_at: string }[],
+    r2Bytes: number(r2Result.data),
+  };
 }

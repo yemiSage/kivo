@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     if (reservation.error) {
       path = undefined;
       const message = reservation.error.message;
-      if (message.includes("100 MB storage allowance") || message.includes("Storage is temporarily full")) return json({ error: message }, 409);
+      if ((message.includes("100 MB storage allowance") || message.includes("Your storage allowance") || message.includes("uploads are currently paused")) || message.includes("Storage is temporarily full")) return json({ error: message }, 409);
       throw reservation.error;
     }
     await putR2Image(path, buffer, format.mime);

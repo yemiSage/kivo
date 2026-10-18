@@ -32,3 +32,7 @@ Run npm run storage:cleanup daily (or on demand). It checks at most 100 pending/
 ## Verification boundary
 
 Local PostgreSQL-engine tests exercise the actual migration, legacy quota accounting, attachment uniqueness, owner matching, delete queue, global cap, and denied client ledger writes. Browser checks exercise real canvas compression. Live Cloudflare credentials and hosted database access are required for end-to-end upload verification; local passing tests do not establish that the migration, settings, or deployed bucket are correct.
+
+## Superadmin controls
+
+Apply [0010_admin_storage_controls.sql](../supabase/migrations/0010_admin_storage_controls.sql) to enable per-user upload access and quota overrides, the default user allowance, global upload pause, and a total R2 ceiling adjustable from 1 to 9 GB. Changes are recorded transactionally in a private audit table. Only the allowlisted superadmin server actions may call the service-only mutation functions. Pausing uploads does not suspend sign-in or remove existing files. Blank user quota means the platform default. Limits for original/stored image size stay fixed at 5/1 MiB.
