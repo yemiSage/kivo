@@ -43,3 +43,9 @@ The maintainer identified the scene as downloaded from Unsplash. The photographe
 ## Other assets
 
 Geist font files and Iconsax icons retain their upstream licenses. Generated PWA icons are produced by `src/app/icons/[file]/route.tsx`; do not imply that providers endorse a fork. Kivo's license does not grant rights to linked websites, remote previews, user uploads, trademarks or the content users save. See [third-party notices](../THIRD_PARTY_NOTICES.md) before redistribution.
+
+## Loading animation
+
+Creator: Weifeng, “loading” on [LottieFiles](https://lottiefiles.com/free-animation/loading-wDUukARCPj). Original data is preserved in `src/assets/loading.json`. The SVG/CSS adaptation in `LoadingSpinner.tsx` and `globals.css` retains the dots, colors, positions, and 41-frame/30fps timing; crops empty canvas space and respects reduced motion. It requires no player library or runtime network request.
+
+The original and adapted animation use the [Lottie Simple License](https://lottiefiles.com/page/license), rather than the repository MIT license. See `src/assets/LOTTIE-LICENSE.txt`.

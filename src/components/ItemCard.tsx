@@ -4,6 +4,7 @@ import { hostLabel, PLATFORM_LABEL } from "@/lib/url";
 import { cn } from "@/lib/utils";
 import { ArticleIcon, ImageIcon, LinkIcon, PostIcon, VideoIcon, type IconProps } from "./icons";
 import { MediaThumbnail } from "./MediaThumbnail";
+import { ItemCardActions } from "./ItemCardActions";
 
 export const KIND_META: Record<ItemKind, { label: string; plural: string; Icon: (p: IconProps) => React.ReactNode }> = {
   image: { label: "Image", plural: "Images", Icon: ImageIcon },
@@ -49,9 +50,10 @@ export function ItemThumb({
 export function ItemCard({ item, eager = false }: { item: ItemView; eager?: boolean }) {
   const { Icon, label } = KIND_META[item.kind];
   return (
+    <article className="group rounded-2xl border bg-card p-2 transition hover:border-black/10 hover:shadow-[0_8px_24px_-12px_rgb(40_40_30/0.18)]">
     <Link
       href={`/item/${item.id}`}
-      className="group block rounded-2xl border bg-card p-2 outline-none transition hover:border-black/10 hover:shadow-[0_8px_24px_-12px_rgb(40_40_30/0.18)] focus-visible:ring-2 focus-visible:ring-ring/40 active:scale-[0.99]"
+      className="block rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring/40 active:scale-[0.99]"
     >
       <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-secondary">
         <ItemThumb item={item} eager={eager} className="transition duration-500 group-hover:scale-[1.03]" />
@@ -63,10 +65,11 @@ export function ItemCard({ item, eager = false }: { item: ItemView; eager?: bool
             <Icon size={13} />
             {label}
           </span>
-          <span className="hidden truncate md:inline">{sourceLabel(item)}</span>
         </div>
       </div>
     </Link>
+    <ItemCardActions id={item.id} title={item.title || hostLabel(item.url) || "Untitled"} />
+    </article>
   );
 }
 
@@ -81,3 +84,4 @@ export function ItemGrid({ items }: { items: ItemView[] }) {
     </ul>
   );
 }
+

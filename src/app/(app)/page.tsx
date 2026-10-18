@@ -8,7 +8,7 @@ import { ItemGrid, KIND_META } from "@/components/ItemCard";
 import { EmptyState } from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
 import { BookmarkIcon, HashIcon, PlusIcon, XIcon } from "@/components/icons";
-import { GridSkeleton } from "@/components/Skeletons";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 import type { ItemKind } from "@/lib/types";
 
 async function LibraryItems({ kind, tag }: { kind: ItemKind | null; tag: string | null }) {
@@ -55,7 +55,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
       <KindFilter basePath="/" active={kind} extra={tag ? { tag } : {}} />
       </PageHeader>
 
-      <Suspense key={`${kind ?? "all"}:${tag ?? ""}`} fallback={<GridSkeleton />}>
+      <Suspense key={`${kind ?? "all"}:${tag ?? ""}`} fallback={<LoadingOverlay />}>
         <LibraryItems kind={kind} tag={tag} />
       </Suspense>
     </>

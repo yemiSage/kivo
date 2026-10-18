@@ -29,9 +29,9 @@ import {
 
 const MAIN = [
   { href: "/", label: "Library", Icon: HomeIcon },
+  { href: "/collections", label: "Vaults", Icon: FolderIcon },
   { href: "/save", label: "Save", Icon: BookmarkIcon },
   { href: "/search", label: "Search", Icon: SearchIcon },
-  { href: "/collections", label: "Vaults", Icon: FolderIcon },
 ];
 
 function NavLink({ href, active, children }: { href: string; active: boolean; children: React.ReactNode }) {

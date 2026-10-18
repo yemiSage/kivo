@@ -1,11 +1,13 @@
 import { cn } from "@/lib/utils";
 
+/** SVG/CSS adaptation of Weifeng's loading animation; see docs/ASSETS.md. */
 export function LoadingSpinner({ className, label = "Loading" }: { className?: string; label?: string }) {
   return (
-    <span role="status" aria-label={label} className={cn("relative inline-flex size-5 shrink-0", className)}>
-      <span className="absolute inset-0 rounded-full border-2 border-current opacity-15" />
-      <span className="absolute inset-0 animate-spin rounded-full border-2 border-transparent border-r-current border-t-current" />
-      <span className="absolute inset-[38%] animate-pulse rounded-full bg-current" />
+    <span role="status" aria-label={label} className={cn("inline-flex size-5 shrink-0 items-center justify-center", className)}>
+      <svg viewBox="74 123 140 60" className="h-full w-full overflow-visible" aria-hidden="true">
+        <circle className="loading-dot loading-dot-green" cx="104.534" cy="153.386" r="20.458" fill="#25d8a7" />
+        <circle className="loading-dot loading-dot-blue" cx="184.534" cy="153.386" r="20.458" fill="#1da8fa" />
+      </svg>
     </span>
   );
 }

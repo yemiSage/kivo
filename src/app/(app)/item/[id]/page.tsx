@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { ItemThumb, KIND_META, sourceLabel } from "@/components/ItemCard";
 import { ItemEditor } from "@/components/ItemEditor";
 import { ImagePreview } from "@/components/ImagePreview";
+import { StickyItemPreview } from "@/components/StickyItemPreview";
 
 export default async function ItemPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -43,7 +44,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
 
       />
       <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-start">
-        <div className="flex min-w-0 flex-col gap-4 lg:sticky lg:top-6">
+        <StickyItemPreview>
           <div className="min-w-0 overflow-hidden rounded-2xl border bg-secondary">
             {item.url ? (
               <a href={item.url} target="_blank" rel="noopener noreferrer" aria-label={`Open original: ${title}`} className="block aspect-video outline-none focus-visible:ring-2 focus-visible:ring-ring">
@@ -64,7 +65,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
             )}
           </div>
           {item.description && <p className="break-words whitespace-pre-line text-[15px] leading-relaxed text-muted-foreground">{item.description}</p>}
-        </div>
+        </StickyItemPreview>
         <div className="w-full min-w-0 overflow-hidden rounded-2xl border bg-card p-4 md:p-6">
           <ItemEditor item={item} collections={collections} />
         </div>

@@ -249,3 +249,11 @@ body:has(.launch-screen)::before { content: none; }
   /* Preserve the recovery timeout even when decorative motion is disabled. */
   .launch-recovery { animation-duration: 0s !important; }
 }
+
+/* Original timing: 41 frames at 30fps; positions reverse on frame 19. */
+.loading-dot { animation-duration: 1.3666667s; animation-timing-function: linear; animation-iteration-count: infinite; }
+.loading-dot-green { animation-name: loading-dot-green; }
+.loading-dot-blue { animation-name: loading-dot-blue; }
+@keyframes loading-dot-green { 0%, 97.560976%, 100% { transform: translateX(0); } 46.341463% { transform: translateX(80px); } }
+@keyframes loading-dot-blue { 0%, 97.560976%, 100% { transform: translateX(0); } 46.341463% { transform: translateX(-80px); } }
+@media (prefers-reduced-motion: reduce) { .loading-dot { animation: none; } }

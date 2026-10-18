@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { BrandLogo } from "./BrandLogo";
+import { BrandMark } from "./BrandMark";
 import { ChevronLeftIcon, ChevronRightIcon } from "./icons";
 
 export interface Crumb {
@@ -40,7 +40,7 @@ export function PageHeader({
           </Link>
         ) : (
           <Link href="/" className="flex items-center gap-2 md:hidden">
-            <BrandLogo />
+            <BrandMark size={32} />
           </Link>
         )}
         <nav aria-label="Breadcrumb" className="hidden min-w-0 items-center gap-1.5 text-[15px] text-muted-foreground md:flex">
@@ -61,7 +61,7 @@ export function PageHeader({
       </div>
 
       <header className="mb-6">
-        <div className="pt-[18px] md:pt-8">
+        <div className="pt-[18px] md:pt-6">
           <h1 className={cn("break-all text-xl font-semibold leading-tight tracking-tight md:break-words md:text-[28px]", titleClassName)}>{title}</h1>
           {subtitle && <p className={cn("mt-1 text-sm text-muted-foreground md:text-[15px]", subtitleClassName)}>{subtitle}</p>}
         </div>
@@ -70,3 +70,4 @@ export function PageHeader({
     </div>
   );
 }
+
