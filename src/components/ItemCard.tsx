@@ -84,4 +84,3 @@ export function ItemGrid({ items }: { items: ItemView[] }) {
     </ul>
   );
 }
-
