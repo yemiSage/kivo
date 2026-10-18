@@ -208,6 +208,44 @@
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }
 
+/* Public, cacheable PWA launch shell. No video, image fetch or animation library. */
+body:has(.launch-screen)::before { content: none; }
+.launch-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  overflow: hidden;
+  padding: max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+  background: #fafaf8;
+  color: #0b0d10;
+}
+.launch-lockup { display: grid; justify-items: center; transform: translateY(-18px); }
+.launch-mark { animation: launch-mark-in 620ms cubic-bezier(.16,1,.3,1) both; }
+.launch-mark > span { border-radius: 25px; box-shadow: 0 2px 3px rgb(0 0 0 / .03), 0 12px 28px -16px rgb(0 0 0 / .24); }
+.launch-mark svg { animation: launch-bookmark-in 620ms cubic-bezier(.16,1,.3,1) both; }
+.launch-wordmark { display: flex; gap: 0; margin-top: 19px; font-size: 32px; font-weight: 600; line-height: 1.2; letter-spacing: -1.4px; }
+.launch-wordmark > span { display: inline-block; animation: launch-letter-in 440ms cubic-bezier(.16,1,.3,1) both; }
+.launch-dots { display: flex; gap: 5px; margin-top: 26px; height: 5px; }
+.launch-dots > span { width: 4px; height: 4px; border-radius: 50%; background: #0b0d10; opacity: .25; animation: launch-breathe 1400ms ease-in-out infinite; }
+.launch-dots > span:nth-child(2) { animation-delay: 160ms; }
+.launch-dots > span:nth-child(3) { animation-delay: 320ms; }
+.launch-recovery { position: absolute; inset-inline: 24px; bottom: max(40px, env(safe-area-inset-bottom)); text-align: center; animation: launch-recovery-in 0s 8s both; }
+.launch-recovery p { margin-bottom: 8px; font-size: 12px; color: #6d6d68; }
+.launch-open { display: inline-flex; min-height: 44px; align-items: center; padding: 8px 18px; border: 1px solid #deded9; border-radius: 12px; font-size: 14px; font-weight: 500; }
+.launch-open:focus-visible { outline: 2px solid #0b0d10; outline-offset: 4px; }
+.launch-screen > noscript { position: absolute; bottom: 40px; }
+@keyframes launch-mark-in { from { opacity: 0; transform: translateY(16px) scale(.72) rotate(-9deg); } to { opacity: 1; transform: none; } }
+@keyframes launch-bookmark-in { from { transform: translateY(6px) scale(.8); } to { transform: none; } }
+@keyframes launch-letter-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes launch-breathe { 0%, 80%, 100% { opacity: .18; } 40% { opacity: .75; } }
+@keyframes launch-recovery-in { from { visibility: hidden; } to { visibility: visible; } }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  .launch-mark, .launch-mark svg, .launch-wordmark > span, .launch-dots > span { animation: none; }
+  /* Preserve the recovery timeout even when decorative motion is disabled. */
+  .launch-recovery { animation-duration: 0s !important; }
 }

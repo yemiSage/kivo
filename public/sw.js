@@ -1,11 +1,12 @@
 /* Kivo service worker: share-target file handling + offline caching. */
-const VERSION = "kivo-v1";
+const VERSION = "kivo-v3";
 const SHELL_CACHE = `${VERSION}-shell`;
 const PAGE_CACHE = `${VERSION}-pages`;
 const IMAGE_CACHE = `${VERSION}-images`;
 const SHARE_CACHE = "kivo-share-inbox"; // not versioned: must survive updates mid-share
 const OFFLINE_URL = "/offline";
-const SHELL = [OFFLINE_URL, "/manifest.webmanifest", "/icons/icon-192.png"];
+const LAUNCH_URL = "/launch";
+const SHELL = [OFFLINE_URL, "/manifest.webmanifest", "/icons/icon-192.png?v=k-mark-1"];
 const MAX_IMAGES = 300;
 
 self.addEventListener("install", (event) => {
@@ -16,8 +17,9 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
       const keys = await caches.keys();
+      const current = new Set([SHELL_CACHE, PAGE_CACHE, IMAGE_CACHE]);
       await Promise.all(
-        keys.filter((k) => k.startsWith("kivo-v") && !k.startsWith(VERSION)).map((k) => caches.delete(k)),
+        keys.filter((k) => k.startsWith("kivo-v") && !current.has(k)).map((k) => caches.delete(k)),
       );
       if (self.registration.navigationPreload) await self.registration.navigationPreload.enable();
       await self.clients.claim();
@@ -75,7 +77,7 @@ async function networkFirstPage(event) {
   try {
     const preload = await event.preloadResponse;
     const res = preload || (await fetch(event.request));
-    if (res.ok && res.type === "basic" && !res.redirected) cache.put(event.request, res.clone());
+    if (res.ok && res.type === "basic" && !res.redirected) event.waitUntil(cache.put(event.request, res.clone()).catch(() => {}));
     return res;
   } catch {
     return (await cache.match(event.request, { ignoreSearch: false })) ||
@@ -120,6 +122,12 @@ self.addEventListener("fetch", (event) => {
   }
 
   if (request.mode === "navigate") {
+    // Old installed manifests enter the app without loading a splash or its JS.
+    if (url.origin === self.location.origin && url.pathname === LAUNCH_URL) {
+      event.waitUntil(Promise.resolve(event.preloadResponse).then((res) => res?.body?.cancel()).catch(() => {}));
+      event.respondWith(Promise.resolve(Response.redirect(self.location.origin + "/", 302)));
+      return;
+    }
     if (url.pathname.startsWith("/auth") || url.pathname.startsWith("/share-target")) return;
     event.respondWith(networkFirstPage(event));
     return;

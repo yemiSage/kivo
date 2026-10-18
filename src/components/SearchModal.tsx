@@ -18,6 +18,7 @@ export function SearchModal({ open, onOpenChange }: { open: boolean; onOpenChang
   const [failed, setFailed] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const value = searchQuery;
@@ -94,6 +95,15 @@ export function SearchModal({ open, onOpenChange }: { open: boolean; onOpenChang
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
         showCloseButton={false}
+        onOpenAutoFocus={(event) => {
+          returnFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+          event.preventDefault();
+          inputRef.current?.focus();
+        }}
+        onCloseAutoFocus={(event) => {
+          event.preventDefault();
+          if (returnFocusRef.current?.isConnected) returnFocusRef.current.focus();
+        }}
         onKeyDown={navigateResults}
         className="top-[max(12px,env(safe-area-inset-top))] z-50 max-h-[calc(100dvh-24px)] max-w-[calc(100%-24px)] translate-y-0 gap-3 bg-transparent p-0 ring-0 shadow-none sm:max-w-lg"
       >
@@ -108,7 +118,6 @@ export function SearchModal({ open, onOpenChange }: { open: boolean; onOpenChang
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search your library and settings…"
             aria-label="Search tags, vaults, files, links, videos, images and settings"
-            autoFocus
             autoComplete="off"
             spellCheck={false}
             enterKeyHint="search"

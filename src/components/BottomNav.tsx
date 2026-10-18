@@ -1,9 +1,9 @@
 "use client";
-import { IntentLink as Link } from "./IntentLink";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { SearchModal } from "./SearchModal";
+import { DeferredSearch } from "./DeferredSearch";
 import { FolderIcon, HomeIcon, PlusIcon, SearchIcon, UserIcon } from "./icons";
 
 const TABS = [
@@ -58,7 +58,7 @@ export function BottomNav() {
           })}
         </ul>
       </nav>
-      <SearchModal open={searchOpen} onOpenChange={setSearchOpen} />
+      <DeferredSearch open={searchOpen} onOpenChange={setSearchOpen} />
     </>
   );
 }

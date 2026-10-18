@@ -96,3 +96,8 @@ export const WarningIcon = bulk(Warning2);
 export const OfflineIcon = bulk(Wifi);
 export const GridIcon = bulk(Element4);
 export const EditIcon = bulk(Edit2);
+
+/** Platform-style share: arrow leaving a tray. */
+export function ShareExportIcon({ size = 20, className }: IconProps) {
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true"><path d="M12 15V3m-4 4 4-4 4 4M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" /></svg>;
+}

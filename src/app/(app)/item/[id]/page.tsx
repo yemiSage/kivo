@@ -6,8 +6,6 @@ import { PageHeader } from "@/components/PageHeader";
 import { ItemThumb, KIND_META, sourceLabel } from "@/components/ItemCard";
 import { ItemEditor } from "@/components/ItemEditor";
 import { ImagePreview } from "@/components/ImagePreview";
-import { Button } from "@/components/ui/button";
-import { ExternalIcon } from "@/components/icons";
 
 export default async function ItemPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -22,6 +20,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
   return (
     <>
       <PageHeader
+        sticky
         title={title}
         subtitle={
           <span className="inline-flex flex-wrap items-center gap-x-2 gap-y-1">
@@ -41,20 +40,16 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
         crumbs={[{ label: "Library", href: "/" }, { label: sourceLabel(item) }]}
         titleClassName="text-base md:text-[28px]"
         subtitleClassName="text-xs md:text-[15px]"
-        action={
-          item.url && (
-            <Button asChild className="hidden md:inline-flex">
-              <a href={item.url} target="_blank" rel="noopener noreferrer">
-                Open original <ExternalIcon size={18} />
-              </a>
-            </Button>
-          )
-        }
+
       />
       <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-start">
         <div className="flex min-w-0 flex-col gap-4 lg:sticky lg:top-6">
           <div className="min-w-0 overflow-hidden rounded-2xl border bg-secondary">
-            {item.image ? (
+            {item.url ? (
+              <a href={item.url} target="_blank" rel="noopener noreferrer" aria-label={`Open original: ${title}`} className="block aspect-video outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                <ItemThumb item={item} eager />
+              </a>
+            ) : item.image ? (
               <ImagePreview
                 itemId={item.id}
                 src={item.image}
@@ -68,13 +63,6 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
               </div>
             )}
           </div>
-          {item.url && (
-            <Button asChild variant="outline" className="w-full md:hidden">
-              <a href={item.url} target="_blank" rel="noopener noreferrer">
-                Open original <ExternalIcon size={18} />
-              </a>
-            </Button>
-          )}
           {item.description && <p className="break-words whitespace-pre-line text-[15px] leading-relaxed text-muted-foreground">{item.description}</p>}
         </div>
         <div className="w-full min-w-0 overflow-hidden rounded-2xl border bg-card p-4 md:p-6">

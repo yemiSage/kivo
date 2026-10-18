@@ -4,7 +4,8 @@ import { createClient } from "@supabase/supabase-js";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { env } from "@/lib/env";
-import { requireUser } from "@/lib/supabase/server";
+import { getServerSupabase } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
 export interface AdminUserMetric {
   userId: string;
@@ -62,7 +63,9 @@ function adminEmails() {
 }
 
 export const requireSuperAdmin = cache(async () => {
-  const { user } = await requireUser("/admin");
+  const supabase = await getServerSupabase();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login?next=%2Fadmin");
   const email = user.email?.toLowerCase();
   if (!email || !adminEmails().has(email)) notFound();
   return { id: user.id, email };

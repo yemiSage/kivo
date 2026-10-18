@@ -180,7 +180,7 @@ export function LoginForm({ next }: { next: string }) {
           aria-describedby="email-help"
         />
         <p id="email-help" className="text-xs text-muted-foreground">
-          We’ll email you a secure sign-in link. No password needed.
+          We’ll email you a secure sign-in link.
         </p>
         {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       </div>

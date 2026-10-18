@@ -387,6 +387,8 @@ npm start
 
 Choose another port if development already occupies the default. Use an HTTPS deployment for phone installation, clipboard and share-target tests; ordinary LAN HTTP is not equivalent to a secure installed PWA.
 
+Installed launches open the library directly. Older `/launch` start URLs redirect before splash hydration. Main navigation uses automatic route prefetching; item cards retain intent-based prefetching. Search loads on first opening, and optional worker registration runs after load/idle. See [PWA startup](docs/PWA_STARTUP.md) for update and verification details.
+
 - Installed Android Chromium-based PWAs can receive supported link/text/image shares where Web Share Target is available.
 - Platforms without incoming share support use Copy Link → Kivo → Paste & save. Outgoing `navigator.share` is a separate capability.
 - Before worker activation, the server fallback retains links/text but cannot retain received files through the worker inbox; it gives a retry notice.

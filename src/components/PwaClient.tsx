@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { BrandMark } from "./BrandMark";
 import { ShareIcon, XIcon } from "./icons";
+import { deferUntilIdle } from "@/lib/defer-until-idle";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -26,8 +27,13 @@ export function PwaClient() {
 
   useEffect(() => {
     if ("serviceWorker" in navigator && process.env.NODE_ENV === "production") {
-      navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(() => {});
+      return deferUntilIdle(() => {
+        void navigator.serviceWorker.register("/sw.js", { scope: "/", updateViaCache: "none" }).catch(() => {});
+      });
     }
+  }, []);
+
+  useEffect(() => {
     if (isStandalone()) return;
     let dismissed = false;
     try {

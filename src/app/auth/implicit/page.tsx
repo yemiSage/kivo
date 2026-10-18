@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { env } from "@/lib/env";
 import { safeNext } from "@/lib/safe-next";
-import { BrandMark } from "@/components/BrandMark";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export default function ImplicitAuthPage() {
   const [message, setMessage] = useState("Signing you in…");
@@ -51,8 +51,7 @@ export default function ImplicitAuthPage() {
     <main className="auth-screen pt-safe flex min-h-dvh items-center justify-center p-4">
       <div className="shadow-float animate-rise w-full max-w-[400px] rounded-3xl border border-white/70 bg-shell p-6 text-center md:p-8">
         <div className="mx-auto mb-5 flex w-fit items-center gap-2.5">
-          <BrandMark />
-          <span className="text-lg font-semibold tracking-tight">Kivo</span>
+          <BrandLogo />
         </div>
         <p className="text-sm text-muted-foreground" role="status">{message}</p>
       </div>

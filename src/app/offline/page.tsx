@@ -13,7 +13,7 @@ export default function OfflinePage() {
           <OfflineIcon size={24} />
         </span>
         <h1 className="text-xl font-semibold">You’re offline</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Pages you’ve opened before still work. New saves will go through once you’re back online.</p>
+        <p className="mt-2 text-sm text-muted-foreground">Previously cached pages may still be available. Reconnect to save new items.</p>
         <Button asChild className="mt-6">
           <Link href="/">Go to library</Link>
         </Button>

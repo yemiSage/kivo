@@ -7,6 +7,10 @@ const PUBLIC_PATHS = ["/login", "/auth", "/offline", "/share-target", "/icons", 
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
 
+  // A static, account-free launch screen must not wait for an Auth round trip.
+  // The library it navigates to still runs the normal auth gate and RLS checks.
+  if (request.nextUrl.pathname === "/launch") return response;
+
   if (!env.configured) return response;
 
   const supabase = createServerClient(env.supabaseUrl, env.supabaseAnonKey, {

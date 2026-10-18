@@ -4,6 +4,7 @@ import { createServerClient } from "@supabase/ssr";
 import { redirect } from "next/navigation";
 import { cache } from "react";
 import { env } from "@/lib/env";
+import { getVerifiedIdentity } from "@/lib/verified-identity";
 
 export const getServerSupabase = cache(async () => {
   const cookieStore = await cookies();
@@ -21,11 +22,11 @@ export const getServerSupabase = cache(async () => {
   });
 });
 
-/** One verified Auth request shared by the layout and page in this render. */
+/** Request-scoped verified identity shared by the layout and page. */
 export const getAuthenticatedUser = cache(async () => {
   const supabase = await getServerSupabase();
-  const { data } = await supabase.auth.getUser();
-  return { supabase, user: data.user };
+  const user = await getVerifiedIdentity(supabase);
+  return { supabase, user };
 });
 
 /** Redirect destinations must not become separate keys for the auth lookup. */

@@ -31,6 +31,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
   return (
     <>
       <PageHeader
+        sticky
         title="Library"
         subtitle="Everything you’ve saved, newest first."
         crumbs={[{ label: "Library" }]}
@@ -41,8 +42,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
             </Link>
           </Button>
         }
-      />
-
+      >
       {tag && (
         <div className="mb-3 flex min-w-0 items-center gap-2 rounded-lg bg-secondary px-3 py-2 text-xs">
           <HashIcon size={16} />
@@ -53,6 +53,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
         </div>
       )}
       <KindFilter basePath="/" active={kind} extra={tag ? { tag } : {}} />
+      </PageHeader>
 
       <Suspense key={`${kind ?? "all"}:${tag ?? ""}`} fallback={<GridSkeleton />}>
         <LibraryItems kind={kind} tag={tag} />

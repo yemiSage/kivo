@@ -1,5 +1,5 @@
 "use client";
-import { IntentLink as Link } from "./IntentLink";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { signOut } from "@/app/actions";
@@ -14,8 +14,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { BrandMark } from "./BrandMark";
-import { SearchModal } from "./SearchModal";
+import { BrandLogo } from "./BrandLogo";
+import { DeferredSearch } from "./DeferredSearch";
 import {
   BookmarkIcon,
   ChevronDownIcon,
@@ -63,8 +63,7 @@ export function Sidebar({ email, collections }: { email: string | null; collecti
     <aside className="hidden w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar md:flex">
       <div className="flex h-16 items-center px-5">
         <Link href="/" className="flex items-center gap-2.5">
-          <BrandMark />
-          <span className="text-lg font-semibold tracking-tight">Kivo</span>
+          <BrandLogo />
         </Link>
       </div>
 
@@ -159,7 +158,7 @@ export function Sidebar({ email, collections }: { email: string | null; collecti
           </DropdownMenu>
         </div>
       )}
-      <SearchModal open={searchOpen} onOpenChange={setSearchOpen} />
+      <DeferredSearch open={searchOpen} onOpenChange={setSearchOpen} />
     </aside>
   );
 }

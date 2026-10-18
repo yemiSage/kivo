@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
-import { deleteItem, refreshPreview, updateItem } from "@/app/actions";
+import { deleteItem, updateItem } from "@/app/actions";
 import type { Collection, ItemKind, ItemView } from "@/lib/types";
 import { ITEM_KINDS } from "@/lib/types";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { CollectionPicker } from "./CollectionPicker";
 import { KIND_META } from "./ItemCard";
-import { CheckIcon, RefreshIcon, ShareIcon, TrashIcon } from "./icons";
+import { CheckIcon, ShareExportIcon, TrashIcon } from "./icons";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { TagInput } from "./TagInput";
 import { useToast } from "./Toast";
@@ -130,26 +130,12 @@ export function ItemEditor({ item, collections }: { item: ItemView; collections:
       <div className="flex flex-wrap gap-2 border-t pt-5">
         {item.url && canShare && (
           <Button variant="outline" onClick={() => navigator.share({ title: item.title ?? undefined, url: item.url! }).catch(() => {})}>
-            <ShareIcon size={18} /> Share
-          </Button>
-        )}
-        {item.url && (
-          <Button
-            variant="outline"
-            disabled={pending}
-            onClick={() =>
-              start(async () => {
-                const res = await refreshPreview(item.id);
-                toast(res.ok ? "Preview refreshed" : res.error, res.ok ? "success" : "error");
-              })
-            }
-          >
-            <RefreshIcon size={18} /> Refresh preview
+            <ShareExportIcon size={18} /> Share
           </Button>
         )}
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button variant="destructive" disabled={pending} className="ml-auto">
+            <Button variant="destructive" disabled={pending}>
               <TrashIcon size={18} /> Delete
             </Button>
           </AlertDialogTrigger>

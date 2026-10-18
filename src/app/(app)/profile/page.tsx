@@ -18,7 +18,7 @@ export default async function ProfilePage() {
     <>
       <PageHeader title="Profile" subtitle="Your account and this device." crumbs={[{ label: "Profile" }]} />
       <div className="flex max-w-2xl flex-col gap-4">
-        <section id="account" className="scroll-mt-20 flex items-center gap-4 rounded-2xl border bg-card p-5">
+        <section id="account" className="scroll-mt-20 flex items-center gap-4 rounded-2xl border bg-card p-3">
           <Avatar className="size-12">
             <AvatarFallback className="bg-primary text-base font-medium text-primary-foreground">{(user.email ?? "?")[0].toUpperCase()}</AvatarFallback>
           </Avatar>
@@ -30,7 +30,7 @@ export default async function ProfilePage() {
           </div>
         </section>
 
-        <section id="privacy" className="scroll-mt-20 flex flex-col gap-4 rounded-2xl border bg-card p-3 md:flex-row md:p-5">
+        <section id="privacy" className="scroll-mt-20 flex flex-col gap-4 rounded-2xl border bg-card p-3 md:flex-row">
           <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-secondary">
             <ShieldIcon size={20} />
           </span>

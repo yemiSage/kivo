@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { BrandMark } from "./BrandMark";
+import { BrandLogo } from "./BrandLogo";
 import { ChevronLeftIcon, ChevronRightIcon } from "./icons";
 
 export interface Crumb {
@@ -15,6 +15,8 @@ export function PageHeader({
   back,
   action,
   crumbs = [],
+  sticky = false,
+  children,
   titleClassName,
   subtitleClassName,
 }: {
@@ -23,11 +25,13 @@ export function PageHeader({
   back?: string;
   action?: ReactNode;
   crumbs?: Crumb[];
+  sticky?: boolean;
+  children?: ReactNode;
   titleClassName?: string;
   subtitleClassName?: string;
 }) {
   return (
-    <>
+    <div className={sticky ? "sticky top-0 z-30 -mx-4 bg-shell px-4 pb-1 md:-mx-8 md:px-8" : "contents"}>
       {/* Top bar: breadcrumb on desktop, brand + back on mobile */}
       <div className="sticky top-0 z-30 -mx-4 flex h-[calc(3.5rem+env(safe-area-inset-top))] items-center gap-2 border-b bg-shell px-4 pt-[env(safe-area-inset-top)] md:static md:-mx-8 md:h-16 md:px-8 md:pt-0">
         {back ? (
@@ -36,8 +40,7 @@ export function PageHeader({
           </Link>
         ) : (
           <Link href="/" className="flex items-center gap-2 md:hidden">
-            <BrandMark size={28} />
-            <span className="font-semibold tracking-tight">Kivo</span>
+            <BrandLogo />
           </Link>
         )}
         <nav aria-label="Breadcrumb" className="hidden min-w-0 items-center gap-1.5 text-[15px] text-muted-foreground md:flex">
@@ -63,6 +66,7 @@ export function PageHeader({
           {subtitle && <p className={cn("mt-1 text-sm text-muted-foreground md:text-[15px]", subtitleClassName)}>{subtitle}</p>}
         </div>
       </header>
-    </>
+      {children}
+    </div>
   );
 }
