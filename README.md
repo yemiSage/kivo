@@ -522,3 +522,7 @@ The old photo remains in Git history under its original rights, not MIT. Do not 
 - [GitHub repository licensing](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository)
 - [Sharing guide](docs/SHARING.md)
 - [Readiness review](docs/OPEN_SOURCE_READINESS.md)
+
+### R2 image storage
+
+New uploads use private R2 Standard storage with a 100 MiB per-user quota, a 5 MiB original-image limit, and a 1 MiB stored-image limit. Existing Supabase uploads remain readable. Apply the database migration and configure the private server settings before deploying. See [R2 storage rollout](docs/R2_STORAGE.md).

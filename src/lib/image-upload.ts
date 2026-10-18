@@ -1,44 +1,35 @@
-export const MAX_IMAGE_UPLOAD_BYTES = 5 * 1024 * 1024;
-
-const MAX_IMAGE_DIMENSION = 1920;
-const REENCODE_THRESHOLD_BYTES = 1024 * 1024;
-const OUTPUT_TYPE = "image/webp";
-
-function outputName(name: string) {
-  const base = name.replace(/\.[^.]+$/, "") || "image";
-  return `${base}.webp`;
-}
+import { MAX_ORIGINAL_IMAGE_BYTES, MAX_STORED_IMAGE_BYTES } from "./storage-policy";
+export const MAX_IMAGE_UPLOAD_BYTES = MAX_ORIGINAL_IMAGE_BYTES;
+const MAX_DIMENSION = 1920;
 
 function canvasBlob(canvas: HTMLCanvasElement, quality: number) {
   return new Promise<Blob>((resolve, reject) => {
-    canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("Image encoding failed."))), OUTPUT_TYPE, quality);
+    canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("Image encoding failed.")), "image/webp", quality);
   });
 }
 
-/** Resize large browser-decodable images and encode them efficiently before upload. */
 export async function optimizeImageForUpload(file: File): Promise<File> {
-  // Re-encoding an animated GIF would discard its animation.
-  if (file.type === "image/gif") return file;
-
-  const bitmap = await createImageBitmap(file);
+  if (!file.size || file.size > MAX_ORIGINAL_IMAGE_BYTES) throw new Error("Choose an image that is 5 MB or smaller.");
+  if (!file.type.startsWith("image/")) throw new Error("Choose an image file.");
+  if (file.size <= MAX_STORED_IMAGE_BYTES) return file;
+  if (file.type === "image/gif") throw new Error("Animated GIFs must be 1 MB or smaller to preserve their animation.");
+  let bitmap: ImageBitmap;
+  try { bitmap = await createImageBitmap(file); }
+  catch { throw new Error("This image couldn't be compressed. Use JPEG, PNG or WebP, or an image under 1 MB."); }
   try {
-    const scale = Math.min(1, MAX_IMAGE_DIMENSION / Math.max(bitmap.width, bitmap.height));
-    if (scale === 1 && file.size <= REENCODE_THRESHOLD_BYTES) return file;
-
     const canvas = document.createElement("canvas");
-    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
-    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
     const context = canvas.getContext("2d");
-    if (!context) throw new Error("Image resizing is unavailable in this browser.");
-
-    context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-    let blob = await canvasBlob(canvas, 0.82);
-    if (blob.size > MAX_IMAGE_UPLOAD_BYTES) blob = await canvasBlob(canvas, 0.68);
-
-    // Avoid making an already-small image larger just to change its format.
-    if (blob.size >= file.size && file.size <= MAX_IMAGE_UPLOAD_BYTES) return file;
-    return new File([blob], outputName(file.name), { type: blob.type, lastModified: file.lastModified });
-  } finally {
-    bitmap.close();
-  }
+    if (!context) throw new Error("Image compression is unavailable in this browser.");
+    const initialScale = Math.min(1, MAX_DIMENSION / Math.max(bitmap.width, bitmap.height));
+    for (const factor of [1, 0.8, 0.6, 0.4, 0.25]) {
+      canvas.width = Math.max(1, Math.round(bitmap.width * initialScale * factor));
+      canvas.height = Math.max(1, Math.round(bitmap.height * initialScale * factor));
+      context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      for (const quality of [0.82, 0.68, 0.52]) {
+        const blob = await canvasBlob(canvas, quality);
+        if (blob.size <= MAX_STORED_IMAGE_BYTES) return new File([blob], (file.name.replace(/\.[^.]+$/, "") || "image") + ".webp", { type: blob.type, lastModified: file.lastModified });
+      }
+    }
+    throw new Error("This image couldn't be compressed below 1 MB. Choose a smaller image.");
+  } finally { bitmap.close(); }
 }

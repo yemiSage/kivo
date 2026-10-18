@@ -54,7 +54,7 @@ export function CollectionPicker({
               onClick={() => onChange(on ? null : c.id)}
               className={cn(
                 "flex h-10 shrink-0 items-center gap-2 rounded-lg border px-3 text-sm font-medium outline-none transition focus-visible:ring-2 focus-visible:ring-ring/40 active:scale-[0.98]",
-                on ? "border-primary bg-primary text-primary-foreground" : "bg-background text-foreground hover:bg-secondary",
+                on ? "border-black bg-background text-black ring-1 ring-black" : "bg-background text-foreground hover:bg-secondary",
               )}
             >
               {on ? <CheckIcon size={16} variant="Bold" /> : <FolderIcon size={16} className="text-muted-foreground" />}

@@ -9,6 +9,8 @@ import { MEDIA_BUCKET, withImages, listCollections } from "@/lib/data";
 import { canonicalize, extractUrl, parseHttpUrl } from "@/lib/url";
 import { sendVaultInviteEmail } from "@/lib/email";
 import { env } from "@/lib/env";
+import { deleteR2Image } from "@/lib/r2";
+import { isR2Path } from "@/lib/storage-policy";
 import type { ActionResult, Collection, Item, ItemKind, ItemView } from "@/lib/types";
 import { ITEM_KINDS } from "@/lib/types";
 
@@ -216,7 +218,11 @@ export async function deleteItem(id: string): Promise<ActionResult> {
     const { supabase } = await authed();
     const { data: item, error } = await supabase.from("items").delete().eq("id", id).select("storage_path").maybeSingle();
     if (error) throw error;
-    if (item?.storage_path) await supabase.storage.from(MEDIA_BUCKET).remove([item.storage_path]);
+    if (item?.storage_path) {
+      if (isR2Path(item.storage_path)) {
+        try { await deleteR2Image(item.storage_path); } catch { /* Remains counted and queued for cleanup. */ }
+      } else await supabase.storage.from(MEDIA_BUCKET).remove([item.storage_path]);
+    }
     revalidateLibrary();
     return { ok: true };
   } catch (e) {

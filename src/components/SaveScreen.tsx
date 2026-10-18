@@ -3,9 +3,8 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
-import { saveLink, saveUpload, updateItem, type SaveResult } from "@/app/actions";
-import { getBrowserSupabase } from "@/lib/supabase/client";
-import { MAX_IMAGE_UPLOAD_BYTES, optimizeImageForUpload } from "@/lib/image-upload";
+import { saveLink, updateItem, type SaveResult } from "@/app/actions";
+import { optimizeImageForUpload } from "@/lib/image-upload";
 import type { Collection, ItemView, LinkMetadata } from "@/lib/types";
 import { extractUrl, hostLabel, parseHttpUrl, PLATFORM_LABEL } from "@/lib/url";
 import { CollectionPicker } from "./CollectionPicker";
@@ -112,34 +111,23 @@ export function SaveScreen({ collections, share }: { collections: Collection[]; 
   const doSaveFile = useCallback(
     (f: File, sourceUrl?: string | null, title?: string | null) =>
       startSaving(async () => {
-        let upload = f;
         try {
-          upload = await optimizeImageForUpload(f);
-        } catch {
-          if (f.size <= MAX_IMAGE_UPLOAD_BYTES) upload = f;
-          else {
-            setError("This image couldn't be resized. Choose an image that is 5 MB or smaller.");
-            return;
-          }
+          const upload = await optimizeImageForUpload(f);
+          const form = new FormData();
+          form.set("file", upload);
+          form.set("originalSize", String(f.size));
+          form.set("title", title || f.name.replace(/\.[^.]+$/, ""));
+          if (sourceUrl) form.set("sourceUrl", sourceUrl);
+          if (collectionId) form.set("collectionId", collectionId);
+          if (notes) form.set("notes", notes);
+          for (const tag of tags) form.append("tag", tag);
+          const response = await fetch("/api/uploads", { method: "POST", body: form });
+          const result = await response.json();
+          if (!response.ok) throw new Error(result.error || "Upload failed. Please try again.");
+          handleResult(result as SaveResult);
+        } catch (error) {
+          setError(error instanceof Error ? error.message : "Upload failed. Please try again.");
         }
-        if (upload.size > MAX_IMAGE_UPLOAD_BYTES) {
-          setError("The resized image is still larger than 5 MB. Choose a smaller image.");
-          return;
-        }
-        const supabase = getBrowserSupabase();
-        const { data } = await supabase.auth.getUser();
-        if (!data.user) {
-          setError("Your session expired. Please sign in again.");
-          return;
-        }
-        const ext = (upload.name.split(".").pop() || upload.type.split("/")[1] || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 5);
-        const path = `${data.user.id}/${crypto.randomUUID()}.${ext}`;
-        const up = await supabase.storage.from("media").upload(path, upload, { contentType: upload.type || undefined, cacheControl: "31536000" });
-        if (up.error) {
-          setError("Upload failed. Check your connection and try again.");
-          return;
-        }
-        handleResult(await saveUpload({ storagePath: path, sourceUrl, title: title || f.name.replace(/\.[^.]+$/, ""), collectionId, tags, notes }));
       }),
     [collectionId, tags, notes, handleResult],
   );

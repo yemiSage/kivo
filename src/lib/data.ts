@@ -4,6 +4,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Collection, CollectionWithCount, Item, ItemKind, ItemView } from "./types";
 import { ITEM_KINDS } from "./types";
 import { SignedUrlCache } from "./signed-url-cache";
+import { isR2Path } from "./storage-policy";
 
 export const MEDIA_BUCKET = "media";
 const SIGNED_URL_TTL = 60 * 60 * 6;
@@ -16,7 +17,7 @@ export function parseKind(v: string | string[] | undefined): ItemKind | null {
 
 /** Attach a displayable image URL: signed URL for uploads, else the preview thumbnail. */
 export async function withImages(supabase: SupabaseClient, items: Item[]): Promise<ItemView[]> {
-  const paths = [...new Set(items.map((i) => i.storage_path).filter((p): p is string => Boolean(p)))];
+  const paths = [...new Set(items.map((i) => i.storage_path).filter((p): p is string => Boolean(p) && !isR2Path(p!)))];
   const signed = new Map<string, string>();
   if (paths.length) {
     // The rows above have already passed RLS. Scope cached URLs to the current
@@ -41,7 +42,7 @@ export async function withImages(supabase: SupabaseClient, items: Item[]): Promi
   }
   return items.map((i) => ({
     ...i,
-    image: (i.storage_path && signed.get(i.storage_path)) || i.thumbnail_url,
+    image: i.storage_path && isR2Path(i.storage_path) ? `/api/media/${i.id}` : (i.storage_path && signed.get(i.storage_path)) || i.thumbnail_url,
   }));
 }
 

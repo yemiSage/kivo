@@ -5,8 +5,8 @@ export function LoadingSpinner({ className, label = "Loading" }: { className?: s
   return (
     <span role="status" aria-label={label} className={cn("inline-flex size-5 shrink-0 items-center justify-center", className)}>
       <svg viewBox="74 123 140 60" className="h-full w-full overflow-visible" aria-hidden="true">
-        <circle className="loading-dot loading-dot-green" cx="104.534" cy="153.386" r="20.458" fill="#25d8a7" />
-        <circle className="loading-dot loading-dot-blue" cx="184.534" cy="153.386" r="20.458" fill="#1da8fa" />
+        <circle className="loading-dot loading-dot-green" cx="104.534" cy="153.386" r="16" fill="currentColor" />
+        <circle className="loading-dot loading-dot-blue" cx="184.534" cy="153.386" r="16" fill="currentColor" />
       </svg>
     </span>
   );

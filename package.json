@@ -22,9 +22,12 @@
     "check:secrets": "node scripts/check-secrets.mjs",
     "check:secrets:history": "node scripts/check-secrets.mjs --history",
     "prepare:background": "node scripts/prepare-background.mjs",
-    "prepare:extension-icons": "node scripts/prepare-extension-icons.mjs"
+    "prepare:extension-icons": "node scripts/prepare-extension-icons.mjs",
+    "storage:cleanup": "node scripts/cleanup-r2.mjs"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1152.0",
+    "@aws-sdk/s3-request-presigner": "^3.1152.0",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.117.3",
     "class-variance-authority": "^0.7.1",
@@ -41,6 +44,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",
+    "@electric-sql/pglite": "^0.5.10",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^26.6.5",
     "@types/react": "^19.3.0",
