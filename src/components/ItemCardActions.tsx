@@ -14,7 +14,7 @@ export function ItemCardActions({ id, title }: { id: string; title: string }) {
   const [pending, start] = useTransition();
   const toast = useToast();
   return (
-    <div className="mt-1 flex justify-end gap-1">
+    <div className="flex shrink-0 justify-end gap-1">
       <Button asChild variant="ghost" size="icon-sm">
         <Link href={`/item/${id}#title`} prefetch={false} aria-label={`Edit ${title}`}><EditIcon size={16} /></Link>
       </Button>

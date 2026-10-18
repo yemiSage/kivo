@@ -52,7 +52,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
             </div>
           </div>
           <Button asChild variant="outline">
-            <Link href="/">Open Kivo</Link>
+            <Link href="https://kivo-save.vercel.app/" target="_blank" rel="noopener noreferrer">Open Kivo</Link>
           </Button>
         </header>
 

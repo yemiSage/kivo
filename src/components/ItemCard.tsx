@@ -60,15 +60,15 @@ export function ItemCard({ item, eager = false }: { item: ItemView; eager?: bool
       </div>
       <div className="px-1.5 pb-1.5 pt-3">
         <p className="truncate text-xs font-medium leading-snug md:text-[15px]">{item.title || hostLabel(item.url) || "Untitled"}</p>
-        <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
-          <span className="inline-flex items-center gap-1 rounded-md bg-secondary px-1.5 py-0.5 font-medium text-foreground/80">
-            <Icon size={13} />
-            {label}
-          </span>
-        </div>
       </div>
     </Link>
-    <ItemCardActions id={item.id} title={item.title || hostLabel(item.url) || "Untitled"} />
+    <div className="mt-2 flex items-center justify-between gap-1">
+      <span className="inline-flex min-w-0 items-center gap-1 rounded-md bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-foreground/80 md:text-xs">
+        <Icon size={13} />
+        <span className="truncate">{label}</span>
+      </span>
+      <ItemCardActions id={item.id} title={item.title || hostLabel(item.url) || "Untitled"} />
+    </div>
     </article>
   );
 }

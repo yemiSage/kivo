@@ -29,13 +29,14 @@ const nextConfig: NextConfig = {
     // Private signed uploads need a token query string; only the project's media path is allowed.
     minimumCacheTTL: 300,
   },
-  async rewrites() {
+  async redirects() {
     const adminHost = process.env.ADMIN_HOST?.trim() || "adminkivo-save.vercel.app";
     return [
       {
         source: "/",
         has: [{ type: "host", value: adminHost }],
         destination: "/admin",
+        permanent: false,
       },
     ];
   },

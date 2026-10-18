@@ -234,7 +234,7 @@ Use `.env.local` locally and your hosting provider's secret/environment settings
 | `SUPERADMIN_EMAILS` | Optional admin | Comma-separated exact admin email allowlist. Blank denies all superadmin access. |
 | `SUPABASE_SERVICE_ROLE_KEY` | Optional admin | Server-only privileged metrics key; bypasses RLS. Ordinary saving/search does not need it. |
 | `SUPABASE_STORAGE_QUOTA_GB` | Optional admin | Display capacity, default `1`; set your actual allowance. Does not enforce limits or determine your provider plan. |
-| `ADMIN_HOST` | Optional admin | Hostname only, e.g. `admin.example.com`; rewrites that host's `/` to `/admin`. Blank uses upstream `adminkivo-save.vercel.app`. `/admin` also works directly for authorised accounts. |
+| `ADMIN_HOST` | Optional admin | Hostname only, e.g. `admin.example.com`; redirects that host's `/` to `/admin` before page matching. Blank uses upstream `adminkivo-save.vercel.app`. `/admin` also works directly for authorised accounts. |
 | `BREVO_API_KEY` | Optional invite email | Server-only Brevo transactional API key. |
 | `KIVO_FROM_EMAIL` | Optional invite email | Brevo-verified sender; required alongside the key for sending invite emails. |
 | `GEMINI_API_KEY` | Optional AI | Server-only key; leave blank for rule-based classification. |
@@ -260,7 +260,7 @@ This integration can incur provider charges. Explain the external processing in 
 
 Apply `0005`, set `SUPERADMIN_EMAILS` and `SUPABASE_SERVICE_ROLE_KEY`, sign in as an allowlisted account and open `/admin`. Ordinary users receive a not-found response. Metrics include personal account identifiers and activity/storage counts; protect screenshots and logs.
 
-For a dedicated admin hostname, attach it to the deployment, set `ADMIN_HOST`, allow its auth callback and test sign-in there. Separate origins do not automatically share a session. The current dashboard's `Open Kivo` link points to `/`; customise it to your main app origin if the admin host rewrites `/` back to the dashboard.
+For a dedicated admin hostname, attach it to the deployment, set `ADMIN_HOST`, allow its auth callback and test sign-in there. Separate origins do not automatically share a session. The admin login returns to `/admin`, and `Open Kivo` opens the separate main app at `https://kivo-save.vercel.app/`.
 
 Admin quota values are display-only. Billing, enforced per-user quotas and automated object cleanup are not implemented.
 
