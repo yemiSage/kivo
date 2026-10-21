@@ -83,7 +83,7 @@ export function CollectionPicker({
               className="w-44"
             />
             <Button type="submit" disabled={pending || !name.trim()}>
-              {pending ? <><LoadingSpinner className="size-4" label="Adding vault" /> Adding…</> : "Add"}
+              {pending ? <><LoadingSpinner className="size-5" label="Adding vault" /> Adding…</> : "Add"}
             </Button>
           </form>
         ) : (

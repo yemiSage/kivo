@@ -382,7 +382,7 @@ export function SaveScreen({ collections, share }: { collections: Collection[]; 
           <Button type="submit" size="lg" disabled={busy} className="w-full">
             {busy ? (
               <>
-                <LoadingSpinner className="size-4" label="Saving item" /> Saving…
+                <LoadingSpinner className="size-5" label="Saving item" /> Saving…
               </>
             ) : (
               "Save"

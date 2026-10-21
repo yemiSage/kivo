@@ -236,10 +236,10 @@ export async function createCollection(name: string, emoji?: string | null): Pro
   try {
     const clean = name.trim().slice(0, 60);
     if (!clean) return { ok: false, error: "Give your vault a name." };
-    const { supabase } = await authed();
+    const { supabase, user } = await authed();
     const { data, error } = await supabase
       .from("collections")
-      .insert({ name: clean, emoji: cleanText(emoji, 8) })
+      .insert({ user_id: user.id, name: clean, emoji: cleanText(emoji, 8) })
       .select("*")
       .single();
     if (error?.code === "23505") return { ok: false, error: "You already have a vault with that name." };
