@@ -8,6 +8,6 @@ export function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     // Skip static assets, the service worker and the manifest.
-    "/((?!_next/static|_next/image|favicon.ico|sw.js|manifest.webmanifest|.*\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|sw.js|manifest.webmanifest|downloads/kivo-chrome-extension[.]zip$|.*[.](?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
   ],
 };

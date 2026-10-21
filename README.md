@@ -283,6 +283,7 @@ Admin quota values are display-only. Billing, enforced per-user quotas and autom
 | `npm run check:secrets:history` | Also check reachable history blobs on local Git refs. |
 | `npm run prepare:background -- /path/to/generated-image.png` | Generate the optimised WebP from an input image. Refuses an existing output unless `--force` is passed. |
 | `npm run prepare:extension-icons` | Rasterise the existing bookmark SVG into the extension's PNG sizes. |
+| `npm run prepare:extension-download` | Rebuild the allowlisted extension ZIP served by the desktop Profile download button. Run after changing extension files. |
 | `npm audit` | Current dependency advisories; results change over time. |
 
 Before a PR:
@@ -401,6 +402,8 @@ See [docs/SHARING.md](docs/SHARING.md) for platform notes and real-device tests.
 ## Chrome extension starter
 
 The desktop extension is in [extensions/chrome](extensions/chrome/README.md). Load that folder with **Load unpacked** at `chrome://extensions`, then pin its icon. Toolbar click, `Alt+Shift+K` and page/link right-click actions open the existing Kivo save flow in a new tab. Sign in through the web app in the same Chrome profile. The extension's Options page can target a trusted self-hosted HTTPS origin or localhost for development.
+
+Profile offers **Download Chrome extension** at the existing desktop breakpoint (`md`, 768px and up), with a ZIP and unpacked installation steps. Below that breakpoint it offers **Download PWA**, using the retained browser install prompt where supported and Safari/Chrome home-screen instructions otherwise. The automatic install hint can be dismissed without disabling this settings action.
 
 The starter stores no database credentials and has no persistent access to all websites. Opening a tab is not a save receipt; Kivo confirms success/failure. It is not published to the Chrome Web Store. Read its setup, [privacy notes](extensions/chrome/PRIVACY.md), validation limits and manual acceptance checklist before use. A full authenticated vault/tag popup is future work, not included in this handoff-only version.
 

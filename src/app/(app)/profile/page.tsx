@@ -3,6 +3,7 @@ import { requireUser } from "@/lib/supabase/server";
 import { PageHeader } from "@/components/PageHeader";
 import { SignOutButton } from "@/components/ProfileClient";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { AppDownloads } from "@/components/AppDownloads";
 import { ShieldIcon } from "@/components/icons";
 
 export const metadata: Metadata = { title: "Profile" };
@@ -42,6 +43,8 @@ export default async function ProfilePage() {
             </p>
           </div>
         </section>
+
+        <AppDownloads />
 
         <div id="sign-out" className="scroll-mt-20">
           <SignOutButton />

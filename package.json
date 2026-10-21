@@ -11,7 +11,7 @@
     "node": ">=24 <25"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "node --use-system-ca ./node_modules/next/dist/bin/next dev",
     "build": "next build",
     "start": "next start",
     "lint": "biome lint src tests scripts extensions next.config.ts --error-on-warnings",
@@ -23,6 +23,7 @@
     "check:secrets:history": "node scripts/check-secrets.mjs --history",
     "prepare:background": "node scripts/prepare-background.mjs",
     "prepare:extension-icons": "node scripts/prepare-extension-icons.mjs",
+    "prepare:extension-download": "node scripts/prepare-extension-download.mjs",
     "storage:cleanup": "node scripts/cleanup-r2.mjs"
   },
   "dependencies": {

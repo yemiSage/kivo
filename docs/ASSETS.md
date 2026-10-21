@@ -46,6 +46,6 @@ Geist font files and Iconsax icons retain their upstream licenses. Generated PWA
 
 ## Loading animation
 
-Creator: Weifeng, “loading” on [LottieFiles](https://lottiefiles.com/free-animation/loading-wDUukARCPj). Original data is preserved in `src/assets/loading.json`. The SVG/CSS adaptation in `LoadingSpinner.tsx` and `globals.css` retains the two-dot motion, positions, and 41-frame/30fps timing, with smaller dots using Kivo’s theme color; crops empty canvas space and respects reduced motion. It requires no player library or runtime network request.
+Creator: Weifeng, “loading” on [LottieFiles](https://lottiefiles.com/free-animation/loading-wDUukARCPj). Original data is preserved in `src/assets/loading.json`. The SVG/CSS adaptation in `LoadingSpinner.tsx` and `globals.css` retains the two-dot motion, positions, and 41-frame/30fps timing, with smaller dots: one theme grey and one inheriting the current text color; crops empty canvas space and respects reduced motion. It requires no player library or runtime network request.
 
 The original and adapted animation use the [Lottie Simple License](https://lottiefiles.com/page/license), rather than the repository MIT license. See `src/assets/LOTTIE-LICENSE.txt`.
