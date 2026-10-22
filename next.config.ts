@@ -44,7 +44,9 @@ const nextConfig: NextConfig = {
     ];
   },
   async headers() {
+    const noIndexPaths = ["/admin/:path*", "/api/:path*", "/auth/:path*", "/collections/:path*", "/item/:path*", "/login/:path*", "/offline", "/profile/:path*", "/save/:path*", "/share-target/:path*", "/vault-invite/:path*"];
     return [
+      ...noIndexPaths.map((source) => ({ source, headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" }] })),
       {
         source: "/kivo-canvas-v2.webp",
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],

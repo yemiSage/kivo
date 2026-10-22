@@ -9,6 +9,11 @@ const PUBLIC_PATHS = [
 	"/share-target",
 	"/icons",
 	"/api/health",
+	"/llms.txt",
+	"/robots.txt",
+	"/sitemap.xml",
+	"/opengraph-image",
+	"/twitter-image",
 ];
 
 export async function updateSession(request: NextRequest) {

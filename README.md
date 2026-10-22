@@ -9,6 +9,7 @@ Start with this README, then read [CONTRIBUTING.md](CONTRIBUTING.md) to contribu
 ## Contents
 
 - [Features and current limits](#features-and-current-limits)
+- [Discoverability](#discoverability)
 - [Requirements](#requirements)
 - [Quick start](#quick-start)
 - [Database setup](#database-setup)
@@ -232,7 +233,7 @@ Use `.env.local` locally and your hosting provider's secret/environment settings
 | --- | --- | --- |
 | `NEXT_PUBLIC_SUPABASE_URL` | Core app | Your Supabase Project URL; also sets the allowed uploaded-image optimisation host. |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Core app | Matching public anon/publishable API key. RLS provides access control. Never use a service-role/secret key here. |
-| `NEXT_PUBLIC_SITE_URL` | Configure per deployment | Canonical origin for server-built vault invite URLs. Defaults to `http://localhost:3000`. Default sign-in links use the requesting browser origin. |
+| `NEXT_PUBLIC_SITE_URL` | Configure per deployment | Canonical public origin for metadata, sitemaps and server-built vault invite URLs. Defaults to `http://localhost:3000` in local development; production builds reject loopback as a canonical origin. Default sign-in links use the requesting browser origin. |
 | `SUPERADMIN_EMAILS` | Optional admin | Comma-separated exact admin email allowlist. Blank denies all superadmin access. |
 | `SUPABASE_SERVICE_ROLE_KEY` | Optional admin | Server-only privileged metrics key; bypasses RLS. Ordinary saving/search does not need it. |
 | `SUPABASE_STORAGE_QUOTA_GB` | Optional admin | Display capacity, default `1`; set your actual allowance. Does not enforce limits or determine your provider plan. |
@@ -448,6 +449,12 @@ The credential scanner detects selected token/private-key formats and service-ro
 ## Testing
 
 The public landing page is at `/welcome`. Signed-out visits to `/` go there; signed-in visits keep the library. With the development server running, `npm run test:landing:browser` checks its fixed-screen sections, responsive layouts, keyboard controls, reduced motion, and protected save redirects without an account or backend writes.
+
+## Discoverability
+
+Public discovery is intentionally limited to the maintained welcome, FAQ, contact and policy pages. The application generates `/robots.txt`, `/sitemap.xml`, `/llms.txt`, canonical metadata, JSON-LD and social-preview metadata while private account, collection, item, profile, save, invitation, admin and API routes remain non-indexable. Run `npm run build` before `npm run test:discoverability:production` to validate the rendered production output.
+
+Architecture, security boundaries, implementation details, provider dependencies and the evidence-based decisions not to publish the internal API or add an agent protocol server are documented in [the discoverability audit](docs/discoverability/DISCOVERABILITY_AUDIT.md) and [handover](docs/discoverability/HANDOVER.md).
 
 The linked legal pages are `/welcome/privacy` and `/welcome/terms`. Their operator is MaestroTG, Lagos, Nigeria, with contact address `adegboyeopeyemiazeez@gmail.com`. `KIVO_OPERATOR_NAME`, `KIVO_OPERATOR_CITY`, `KIVO_OPERATOR_COUNTRY`, and `KIVO_PRIVACY_EMAIL` can override the public contact details for a deployment. Rebuild after changing these values.
 

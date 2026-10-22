@@ -15,7 +15,13 @@ const chapters = [
   { id: "start", label: "Get Kivo", eyebrow: "YOUR NEXT GOOD FIND IS OUT THERE", title: <>Keep a little<br />of what you love.</>, copy: "Make room for the ideas you haven’t used yet. Your own corner of the internet, ready when you are." },
 ];
 
-const topNavigation = ["Home", "How it works", "Features", "FAQ", "Contact us"];
+const topNavigation = [
+  { label: "Home", scene: 0 },
+  { label: "How it works", scene: 1 },
+  { label: "Features", scene: 2 },
+  { label: "FAQ", href: "/welcome/faq" },
+  { label: "Contact us", href: "/welcome/contact" },
+] as const;
 
 function FindCard({ kind = "landscape", title, label, className = "" }: { kind?: "landscape" | "type" | "note"; title: string; label: string; className?: string }) {
   return <div className={`${styles.findCard} ${className}`}>
@@ -135,7 +141,7 @@ export function LandingPage() {
     <a className={styles.skipLink} href="#landing-content">Skip to content</a>
     <header className={styles.header}>
       <a href="#intro" aria-label="Kivo home" onClick={event => { event.preventDefault(); goTo(0); }}><BrandLogo height={32} /></a>
-      <nav aria-label="Product sections" className={styles.topNav}>{topNavigation.map((label, index) => <button key={label} type="button" aria-current={active === index ? "step" : undefined} onClick={() => goTo(index)}>{label}</button>)}</nav>
+      <nav aria-label="Product sections" className={styles.topNav}>{topNavigation.map(item => "scene" in item ? <button key={item.label} type="button" aria-current={active === item.scene ? "step" : undefined} onClick={() => goTo(item.scene)}>{item.label}</button> : <Link key={item.label} href={item.href} prefetch={false}>{item.label}</Link>)}</nav>
       <Link href="/login" prefetch={false} className={styles.signIn}>Get started <ArrowRightIcon /></Link>
     </header>
     <main ref={scroller} id="landing-content" tabIndex={0} className={styles.scrollport} onKeyDown={onKeyDown} aria-label="Discover Kivo. Scroll or use the arrow keys to explore.">

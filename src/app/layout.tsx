@@ -5,6 +5,7 @@ import { GeistMono } from "geist/font/mono";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaClient } from "@/components/PwaClient";
 import { cn } from "@/lib/utils";
+import { SITE_DESCRIPTION, SITE_URL } from "@/lib/discoverability";
 import "./globals.css";
 
 const bricolageGrotesque = Bricolage_Grotesque({
@@ -13,8 +14,9 @@ const bricolageGrotesque = Bricolage_Grotesque({
 });
 
 export const metadata: Metadata = {
+  metadataBase: SITE_URL,
   title: { default: "Kivo", template: "%s · Kivo" },
-  description: "Save anything from anywhere. Organise it automatically. Find it whenever you need it.",
+  description: SITE_DESCRIPTION,
   applicationName: "Kivo",
   manifest: "/manifest.webmanifest",
   appleWebApp: { capable: true, title: "Kivo", statusBarStyle: "default" },
@@ -26,6 +28,7 @@ export const metadata: Metadata = {
     apple: [{ url: "/icons/apple-180.png?v=k-mark-1", sizes: "180x180" }],
   },
   formatDetection: { telephone: false },
+  robots: { index: false, follow: false, nocache: true },
 };
 
 export const viewport: Viewport = {

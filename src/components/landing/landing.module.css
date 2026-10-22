@@ -20,8 +20,8 @@
 .header { position: absolute; z-index: 40; inset: 0 0 auto; height: 82px; display: flex; align-items: center; justify-content: space-between; max-width: 1280px; padding: 0 48px; margin: auto; }
 .header > a:first-child { display: flex; }
 .topNav { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 30px; }
-.topNav button { font-size: 13px; color: var(--soft-ink); padding: 10px 0; }
-.topNav button[aria-current] { color: var(--ink); }
+.topNav :is(button, a) { font-size: 13px; color: var(--soft-ink); padding: 10px 0; }
+.topNav :is(button, a)[aria-current] { color: var(--ink); }
 .signIn { display: inline-flex; align-items: center; gap: 16px; height: 40px; padding: 0 17px; border: 1px solid #cdced3; border-radius: 24px; background: transparent; font-size: 12px; font-weight: 500; }
 .scrollport { position: absolute; inset: 0; height: 100dvh; overflow-y: auto; overflow-x: clip; scroll-snap-type: y mandatory; scrollbar-width: none; overscroll-behavior-y: contain; outline: none; }
 .scrollport::-webkit-scrollbar { display: none; }
