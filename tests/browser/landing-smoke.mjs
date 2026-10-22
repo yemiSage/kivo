@@ -11,6 +11,8 @@ try {
     page.on("pageerror", error => errors.push(error.message));
     await page.goto(`${origin}/welcome`, { timeout: 120000 });
     await page.getByRole("heading", { level: 1 }).waitFor();
+    assert.deepEqual(await page.locator("header nav button").allTextContents(), ["Home", "How it works", "Features", "FAQ", "Contact us"]);
+    assert.equal(await page.getByText("Your memory, with a search bar.", { exact: true }).count(), 0);
     assert.equal(await page.locator("header").getByRole("link", { name: "Get started" }).getAttribute("href"), "/login");
     assert.equal(await page.getByRole("link", { name: "Privacy", exact: true }).getAttribute("href"), "/welcome/privacy");
     assert.equal(await page.getByRole("link", { name: "Terms of use", exact: true }).getAttribute("href"), "/welcome/terms");
@@ -23,6 +25,10 @@ try {
       await page.waitForFunction(id => document.getElementById(id)?.getAttribute("data-active") === "true", id);
       assert.equal(await page.locator("main section:not([inert])").count(), 1);
       assert.equal(await page.locator("header").evaluate(node => node.getBoundingClientRect().top), headerTop);
+      if (id === "find") {
+        assert.equal(await page.locator("#find").getByRole("button", { name: "Keep exploring", exact: true }).locator("svg").count(), 0);
+        assert.match(await page.locator("#find-title").evaluate(node => getComputedStyle(node).fontFamily), /Bricolage Grotesque/i);
+      }
     }
     assert.equal(await page.getByRole("link", { name: "Start your collection" }).getAttribute("href"), "/login");
     assert.equal(await page.getByRole("link", { name: "Chrome extension" }).getAttribute("href"), "/downloads/kivo-chrome-extension.zip");

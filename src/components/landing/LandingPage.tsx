@@ -15,6 +15,8 @@ const chapters = [
   { id: "start", label: "Get Kivo", eyebrow: "YOUR NEXT GOOD FIND IS OUT THERE", title: <>Keep a little<br />of what you love.</>, copy: "Make room for the ideas you haven’t used yet. Your own corner of the internet, ready when you are." },
 ];
 
+const topNavigation = ["Home", "How it works", "Features", "FAQ", "Contact us"];
+
 function FindCard({ kind = "landscape", title, label, className = "" }: { kind?: "landscape" | "type" | "note"; title: string; label: string; className?: string }) {
   return <div className={`${styles.findCard} ${className}`}>
     <div className={`${styles.cardArt} ${styles[kind]}`}>
@@ -76,7 +78,6 @@ function SearchVisual() {
       </div>
       <div className={styles.searchBottom}><span>Links, images, videos, vaults. All here.</span><span>↵</span></div>
     </div>
-    <span className={styles.searchAnnotation}>Your memory, with a search bar.</span>
   </div>;
 }
 
@@ -134,7 +135,7 @@ export function LandingPage() {
     <a className={styles.skipLink} href="#landing-content">Skip to content</a>
     <header className={styles.header}>
       <a href="#intro" aria-label="Kivo home" onClick={event => { event.preventDefault(); goTo(0); }}><BrandLogo height={32} /></a>
-      <nav aria-label="Product sections" className={styles.topNav}>{chapters.slice(1, 4).map((chapter, index) => <button key={chapter.id} type="button" aria-current={active === index + 1 ? "step" : undefined} onClick={() => goTo(index + 1)}>{chapter.label}</button>)}</nav>
+      <nav aria-label="Product sections" className={styles.topNav}>{topNavigation.map((label, index) => <button key={label} type="button" aria-current={active === index ? "step" : undefined} onClick={() => goTo(index)}>{label}</button>)}</nav>
       <Link href="/login" prefetch={false} className={styles.signIn}>Get started <ArrowRightIcon /></Link>
     </header>
     <main ref={scroller} id="landing-content" tabIndex={0} className={styles.scrollport} onKeyDown={onKeyDown} aria-label="Discover Kivo. Scroll or use the arrow keys to explore.">
@@ -143,9 +144,9 @@ export function LandingPage() {
           {chapters.map((chapter, index) => {
             const Visual = visuals[index];
             return <section key={chapter.id} id={chapter.id} className={styles.scene} data-active={active === index} data-before={active > index} aria-hidden={active !== index} inert={active !== index} aria-labelledby={`${chapter.id}-title`}>
-              <div className={styles.sceneIntro}><p className={styles.eyebrow}>{chapter.eyebrow}</p>{index === 0 ? <h1 id={`${chapter.id}-title`}>{chapter.title}</h1> : <h2 id={`${chapter.id}-title`}>{chapter.title}</h2>}<p className={styles.description}>{chapter.copy}</p></div>
+              <div className={styles.sceneIntro}><p className={styles.eyebrow}>{chapter.eyebrow}</p>{index === 0 ? <h1 id={`${chapter.id}-title`}>{chapter.title}</h1> : <h2 id={`${chapter.id}-title`} className={chapter.id === "find" ? styles.bricolageHeading : undefined}>{chapter.title}</h2>}<p className={styles.description}>{chapter.copy}</p></div>
               <div className={styles.visual}><Visual /></div>
-              <div className={styles.sceneActions}><Link href="/login" prefetch={false} className={styles.primaryLink}>{index === 4 ? "Start your collection" : "Get started"}<ArrowRightIcon /></Link>{index === 4 ? <a className={styles.secondaryLink} href="/downloads/kivo-chrome-extension.zip" download>Chrome extension <LinkIcon size={15} /></a> : <button type="button" className={styles.secondaryLink} onClick={() => goTo(index + 1)}>{index === 0 ? "Take a look around" : "Keep exploring"}<ChevronDownIcon size={14} /></button>}</div>
+              <div className={styles.sceneActions}><Link href="/login" prefetch={false} className={styles.primaryLink}>{index === 4 ? "Start your collection" : "Get started"}<ArrowRightIcon /></Link>{index === 4 ? <a className={styles.secondaryLink} href="/downloads/kivo-chrome-extension.zip" download>Chrome extension <LinkIcon size={15} /></a> : <button type="button" className={styles.secondaryLink} onClick={() => goTo(index + 1)}>{index === 0 ? <>Take a look around<ChevronDownIcon size={14} /></> : "Keep exploring"}</button>}</div>
               <p className={styles.sceneHint}>{index === 0 ? "A little less scattered. A lot more you." : index === 4 ? "On your phone. In your browser. Wherever curiosity takes you." : "Links, images, videos. All your little discoveries, together."}</p>
             </section>;
           })}

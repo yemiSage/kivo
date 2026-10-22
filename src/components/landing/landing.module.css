@@ -34,6 +34,7 @@
 .sceneIntro { text-align: center; flex-shrink: 0; position: relative; z-index: 2; }
 .eyebrow { font-family: var(--font-geist-mono), monospace; font-size: 9px; letter-spacing: 0.17em; color: var(--soft-ink); margin-bottom: 15px; }
 .scene :is(h1,h2) { font-size: clamp(38px, min(5vw, 7.4dvh), 72px); font-weight: 550; line-height: 1.01; letter-spacing: -0.06em; text-wrap: balance; }
+.scene .bricolageHeading { font-family: var(--font-bricolage-grotesque), sans-serif; }
 .description { max-width: 455px; margin: 17px auto 0; color: var(--soft-ink); font-size: 14px; line-height: 1.65; text-wrap: pretty; }
 .visual { flex: 1; min-height: 0; width: min(750px, 100%); display: flex; align-items: center; justify-content: center; position: relative; margin: 8px 0 12px; }
 .sceneActions { display: flex; align-items: center; justify-content: center; gap: 12px; flex-shrink: 0; position: relative; z-index: 3; }
@@ -138,7 +139,6 @@
 .resultSymbol { background: #eeecf5; color: #9387aa; display: grid; place-items: center; }
 .resultRow mark { background: #eeecf5; color: inherit; }
 .searchBottom { display: flex; justify-content: space-between; font-size: 8px; color: #9a9aa2; padding: 10px 16px; border-top: 1px solid #eeeef0; }
-.searchAnnotation { font-family: Georgia, serif; font-style: italic; position: absolute; right: -38px; bottom: -35px; transform: rotate(-4deg); color: #8c8b91; font-size: 15px; }
 .startVisual { height: 265px; width: 330px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; flex-shrink: 0; }
 .finalBookmark { width: 180px; height: 205px; background: white; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; border: 1px solid #e3e3e6; border-radius: 28px; transform: rotate(-8deg); box-shadow: 0 5px 8px #00000005, 0 24px 32px -15px #00000020; color: #323332; }
 .finalTag { display: flex; gap: 6px; align-items: center; position: absolute; right: -12px; bottom: 29px; padding: 10px 14px; background: #e8eddf; border: 1px solid #dce2d1; color: #71815f; font-size: 9px; border-radius: 7px; transform: rotate(7deg); }
