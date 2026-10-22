@@ -4,6 +4,7 @@ import { ITEM_KINDS } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { KIND_META } from "./ItemCard";
 import { GridIcon } from "./icons";
+import { LayoutSwitch } from "./ContentLayout";
 
 /** Segmented filter (like the Calendar / Board switcher in the reference). Plain links, works without JS. */
 export function KindFilter({ basePath, active, extra = {} }: { basePath: string; active: ItemKind | null; extra?: Record<string, string> }) {
@@ -23,7 +24,8 @@ export function KindFilter({ basePath, active, extra = {} }: { basePath: string;
   ];
 
   return (
-    <nav aria-label="Filter by type" className="no-scrollbar -mx-4 mb-5 overflow-x-auto px-4 md:mx-0 md:px-0">
+    <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+    <nav aria-label="Filter by type" className="no-scrollbar -mx-4 min-w-0 overflow-x-auto px-4 md:mx-0 md:px-0">
       <div className="flex h-10 w-full items-center gap-0.5 rounded-xl border bg-secondary p-1 md:w-fit">
         {items.map(({ kind, label, Icon }) => {
           const on = active === kind;
@@ -45,5 +47,7 @@ export function KindFilter({ basePath, active, extra = {} }: { basePath: string;
         })}
       </div>
     </nav>
+    <div className="flex shrink-0 justify-end"><LayoutSwitch /></div>
+    </div>
   );
 }

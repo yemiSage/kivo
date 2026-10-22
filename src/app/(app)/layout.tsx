@@ -27,7 +27,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <a href="#main-content" className="sr-only fixed left-3 top-3 z-[100] rounded-lg bg-primary px-3 py-2 text-primary-foreground focus:not-sr-only">
         Skip to content
       </a>
-      <div className="flex min-h-0 w-full overflow-hidden bg-shell md:rounded-3xl md:border md:border-white/70 md:shadow-[0_1px_2px_rgb(40_40_30/0.04),0_12px_40px_-12px_rgb(40_40_30/0.14)]">
+      <div className="flex min-h-0 min-w-0 w-full overflow-hidden bg-shell md:rounded-3xl md:border md:border-white/70 md:shadow-[0_1px_2px_rgb(40_40_30/0.04),0_12px_40px_-12px_rgb(40_40_30/0.14)]">
         <Suspense fallback={<Sidebar email={null} collections={[]} />}>
           <AppSidebar />
         </Suspense>

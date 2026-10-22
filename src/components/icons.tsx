@@ -25,6 +25,7 @@ import {
   Mobile,
   More,
   Refresh2,
+  RowVertical,
   SearchNormal1,
   Setting2,
   Share,
@@ -95,6 +96,7 @@ export const InfoIcon = bulk(InfoCircle);
 export const WarningIcon = bulk(Warning2);
 export const OfflineIcon = bulk(Wifi);
 export const GridIcon = bulk(Element4);
+export const ListIcon = bulk(RowVertical);
 export const EditIcon = bulk(Edit2);
 
 /** Platform-style share: arrow leaving a tray. */

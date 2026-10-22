@@ -1,6 +1,13 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Hover is for desktop pointers only; taps never leave a hover appearance. */
+@custom-variant hover {
+  @media (min-width: 48rem) and (hover: hover) and (pointer: fine) {
+    &:hover { @slot; }
+  }
+}
+
 /* Local copies of the state variants used by our generated Radix components. */
 @custom-variant data-open {
   &:where([data-state="open"]),
@@ -116,12 +123,18 @@
     @apply border-border outline-ring/40;
   }
   html {
+    width: 100%;
+    overflow-x: clip;
+    touch-action: manipulation;
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
     background: var(--shell);
     @apply font-sans;
   }
   body {
+    width: 100%;
+    min-width: 0;
+    overflow-x: clip;
     position: relative;
     isolation: isolate;
     min-height: 100dvh;
@@ -163,7 +176,18 @@
 .pt-safe { padding-top: env(safe-area-inset-top); }
 
 .app-frame {
-  width: 100vw;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* Prevent focus-triggered browser zoom on phone and tablet form controls. */
+@media (pointer: coarse), (max-width: 47.999rem) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  textarea,
+  select {
+    font-size: 16px;
+  }
 }
 
 /* Authentication keeps the scenic canvas on phones; the signed-in shell stays plain. */

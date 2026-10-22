@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { ArticleIcon, ImageIcon, LinkIcon, PostIcon, VideoIcon, type IconProps } from "./icons";
 import { MediaThumbnail } from "./MediaThumbnail";
 import { ItemCardActions } from "./ItemCardActions";
+import { ContentLayout } from "./ContentLayout";
 
 export const KIND_META: Record<ItemKind, { label: string; plural: string; Icon: (p: IconProps) => React.ReactNode }> = {
   image: { label: "Image", plural: "Images", Icon: ImageIcon },
@@ -40,9 +41,9 @@ export function ItemThumb({
     );
   }
   return (
-    <div className={cn("flex h-full w-full flex-col items-center justify-center gap-2 bg-secondary p-4 text-muted-foreground", className)}>
+    <div className={cn("flex h-full w-full flex-col items-center justify-center gap-2 bg-secondary p-4 text-muted-foreground group-data-[layout=list]/layout:p-2", className)}>
       <Icon size={28} />
-      <span className="line-clamp-2 text-center text-xs font-medium">{hostLabel(item.url) || item.title}</span>
+      <span className="line-clamp-2 text-center text-xs font-medium group-data-[layout=list]/layout:hidden">{hostLabel(item.url) || item.title}</span>
     </div>
   );
 }
@@ -50,20 +51,21 @@ export function ItemThumb({
 export function ItemCard({ item, eager = false }: { item: ItemView; eager?: boolean }) {
   const { Icon, label } = KIND_META[item.kind];
   return (
-    <article className="group rounded-2xl border bg-card p-2 transition hover:border-black/10 hover:shadow-[0_8px_24px_-12px_rgb(40_40_30/0.18)]">
+    <article className="group rounded-2xl border bg-card p-2 group-data-[layout=list]/layout:flex group-data-[layout=list]/layout:items-center group-data-[layout=list]/layout:gap-3">
     <Link
       href={`/item/${item.id}`}
-      className="block rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring/40 active:scale-[0.99]"
+      className="block rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring/40 group-data-[layout=list]/layout:flex group-data-[layout=list]/layout:min-w-0 group-data-[layout=list]/layout:flex-1 group-data-[layout=list]/layout:items-center group-data-[layout=list]/layout:gap-3"
     >
-      <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-secondary">
-        <ItemThumb item={item} eager={eager} className="transition duration-500 group-hover:scale-[1.03]" />
+      <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-secondary group-data-[layout=list]/layout:aspect-square group-data-[layout=list]/layout:size-16 group-data-[layout=list]/layout:shrink-0 sm:group-data-[layout=list]/layout:size-20">
+        <ItemThumb item={item} eager={eager} />
       </div>
-      <div className="px-1.5 pb-1.5 pt-3">
-        <p className="truncate text-xs font-medium leading-snug md:text-[15px]">{item.title || hostLabel(item.url) || "Untitled"}</p>
+      <div className="px-1.5 pb-1.5 pt-3 group-data-[layout=list]/layout:min-w-0 group-data-[layout=list]/layout:flex-1 group-data-[layout=list]/layout:p-0">
+        <p className="truncate text-xs font-medium leading-snug md:text-[15px] group-data-[layout=list]/layout:line-clamp-2 group-data-[layout=list]/layout:whitespace-normal">{item.title || hostLabel(item.url) || "Untitled"}</p>
+        <p className="mt-1 hidden truncate text-xs text-muted-foreground group-data-[layout=list]/layout:block">{sourceLabel(item)}</p>
       </div>
     </Link>
-    <div className="mt-2 flex items-center justify-between gap-1">
-      <span className="inline-flex min-w-0 items-center gap-1 rounded-md bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-foreground/80 md:text-xs">
+    <div className="mt-2 flex items-center justify-between gap-1 group-data-[layout=list]/layout:mt-0 group-data-[layout=list]/layout:shrink-0">
+      <span className="inline-flex min-w-0 items-center gap-1 rounded-md bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-foreground/80 md:text-xs max-sm:group-data-[layout=list]/layout:hidden">
         <Icon size={13} />
         <span className="truncate">{label}</span>
       </span>
@@ -75,12 +77,14 @@ export function ItemCard({ item, eager = false }: { item: ItemView; eager?: bool
 
 export function ItemGrid({ items }: { items: ItemView[] }) {
   return (
-    <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+    <ContentLayout showControl={false}>
+    <ul className="grid grid-cols-1 gap-3 group-data-[layout=grid]/layout:grid-cols-2 sm:group-data-[layout=grid]/layout:grid-cols-3 lg:group-data-[layout=grid]/layout:grid-cols-4">
       {items.map((item, i) => (
         <li key={item.id} className="animate-rise" style={{ animationDelay: `${Math.min(i, 12) * 30}ms` }}>
           <ItemCard item={item} eager={i < 2} />
         </li>
       ))}
     </ul>
+    </ContentLayout>
   );
 }
