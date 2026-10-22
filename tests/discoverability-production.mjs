@@ -45,7 +45,7 @@ try {
   assert.match(robots, /Sitemap: https:\/\/kivo-save\.vercel\.app\/sitemap\.xml/);
 
   const sitemap = await (await fetch(`${origin}/sitemap.xml`)).text();
-  for (const path of ["/welcome", "/welcome/faq", "/welcome/contact", "/welcome/privacy", "/welcome/terms"]) assert.match(sitemap, new RegExp(`<loc>https://kivo-save\\.vercel\\.app${path.replaceAll("/", "\\/")}</loc>`));
+  for (const path of ["/welcome", "/welcome/how-it-works", "/welcome/features", "/welcome/faq", "/welcome/contact", "/welcome/privacy", "/welcome/terms"]) assert.match(sitemap, new RegExp(`<loc>https://kivo-save\\.vercel\\.app${path.replaceAll("/", "\\/")}</loc>`));
   assert.doesNotMatch(sitemap, /\/(?:admin|api|login|collections|profile|save)</);
 
   const llms = await (await fetch(`${origin}/llms.txt`)).text();
@@ -53,7 +53,7 @@ try {
   assert.match(llms, /Account content is private/);
   assert.doesNotMatch(llms, /(?:SERVICE_ROLE|API_KEY|SECRET)/);
 
-  for (const path of ["/welcome", "/welcome/faq", "/welcome/contact", "/welcome/privacy", "/welcome/terms"]) {
+  for (const path of ["/welcome", "/welcome/how-it-works", "/welcome/features", "/welcome/faq", "/welcome/contact", "/welcome/privacy", "/welcome/terms"]) {
     const response = await fetch(`${origin}${path}`);
     assert.equal(response.status, 200);
     const html = await response.text();

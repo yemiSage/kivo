@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/JsonLd";
-import { LegalPage, type LegalSection } from "@/components/landing/LegalPage";
+import { PageIntro, PublicShell, productPageStyles as styles } from "@/components/landing/PublicShell";
 import { publicMetadata, absoluteUrl } from "@/lib/discoverability";
 
 export const metadata: Metadata = publicMetadata({ title: "Frequently asked questions", description: "Answers about saving, organising, searching, sharing, privacy, installation and AI categorisation in Kivo.", path: "/welcome/faq" });
@@ -15,9 +15,13 @@ const questions = [
   ["ai", "Does Kivo use AI?", "Kivo always has built-in categorisation rules. If the operator enables Gemini, limited save metadata and existing vault names may be sent to suggest a category. Uploaded image bytes and the separate notes field are not sent by that integration."],
 ] as const;
 
-const sections: LegalSection[] = questions.map(([id, title, answer], index) => ({ id, title: `${index + 1}. ${title}`, content: <p>{answer}</p> }));
-
 export default function FaqPage() {
   const schema = { "@context": "https://schema.org", "@type": "FAQPage", url: absoluteUrl("/welcome/faq"), mainEntity: questions.map(([, name, text]) => ({ "@type": "Question", name, acceptedAnswer: { "@type": "Answer", text } })) };
-  return <><JsonLd data={schema} /><LegalPage title="Frequently asked questions" summary="Clear answers about what Kivo does, what stays private, and how the app works." eyebrow="KIVO · PRODUCT GUIDE" metaLine="Source-backed product information" sections={sections} /></>;
+  return <><JsonLd data={schema} /><PublicShell current="/welcome/faq">
+    <PageIntro eyebrow="GOOD QUESTIONS" title={<>A few things<br />worth knowing.</>} copy="Straight answers about saving, searching, privacy, installation and what happens behind the scenes." />
+    <section className={styles.section} aria-labelledby="faq-title">
+      <div className={styles.sectionLabel}><div><p>THE DETAILS</p><h2 id="faq-title">Questions, answered.</h2></div><p>From your first save to a shared vault, find the details that help you feel at home.</p></div>
+      <div className={styles.faqList}>{questions.map(([id, title, answer], index) => <details className={styles.faqItem} key={id} id={id} open={index === 0}><summary>{title}<span aria-hidden="true">+</span></summary><p className={styles.faqAnswer}>{answer}</p></details>)}</div>
+    </section>
+  </PublicShell></>;
 }

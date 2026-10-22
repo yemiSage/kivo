@@ -16,9 +16,9 @@ const chapters = [
 ];
 
 const topNavigation = [
-  { label: "Home", scene: 0 },
-  { label: "How it works", scene: 1 },
-  { label: "Features", scene: 2 },
+  { label: "Home", href: "/welcome" },
+  { label: "How it works", href: "/welcome/how-it-works" },
+  { label: "Features", href: "/welcome/features" },
   { label: "FAQ", href: "/welcome/faq" },
   { label: "Contact us", href: "/welcome/contact" },
 ] as const;
@@ -141,7 +141,7 @@ export function LandingPage() {
     <a className={styles.skipLink} href="#landing-content">Skip to content</a>
     <header className={styles.header}>
       <a href="#intro" aria-label="Kivo home" onClick={event => { event.preventDefault(); goTo(0); }}><BrandLogo height={32} /></a>
-      <nav aria-label="Product sections" className={styles.topNav}>{topNavigation.map(item => "scene" in item ? <button key={item.label} type="button" aria-current={active === item.scene ? "step" : undefined} onClick={() => goTo(item.scene)}>{item.label}</button> : <Link key={item.label} href={item.href} prefetch={false}>{item.label}</Link>)}</nav>
+      <nav aria-label="Product sections" className={styles.topNav}>{topNavigation.map(item => <Link key={item.label} href={item.href} prefetch={false} aria-current={item.href === "/welcome" && active === 0 ? "page" : undefined}>{item.label}</Link>)}</nav>
       <Link href="/login" prefetch={false} className={styles.signIn}>Get started <ArrowRightIcon /></Link>
     </header>
     <main ref={scroller} id="landing-content" tabIndex={0} className={styles.scrollport} onKeyDown={onKeyDown} aria-label="Discover Kivo. Scroll or use the arrow keys to explore.">

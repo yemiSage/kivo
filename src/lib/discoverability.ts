@@ -59,6 +59,8 @@ export function publicMetadata({ title, description, path }: { title: string; de
 
 export const publicPages = [
   { path: "/welcome", priority: 1, changeFrequency: "monthly" as const },
+  { path: "/welcome/how-it-works", priority: 0.9, changeFrequency: "monthly" as const },
+  { path: "/welcome/features", priority: 0.9, changeFrequency: "monthly" as const },
   { path: "/welcome/faq", priority: 0.8, changeFrequency: "monthly" as const },
   { path: "/welcome/contact", priority: 0.6, changeFrequency: "yearly" as const },
   { path: "/welcome/privacy", priority: 0.4, changeFrequency: "yearly" as const },

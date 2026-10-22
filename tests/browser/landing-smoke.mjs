@@ -12,7 +12,9 @@ try {
     await page.goto(`${origin}/welcome`, { timeout: 120000 });
     await page.getByRole("heading", { level: 1 }).waitFor();
     if (width >= 768) {
-      assert.deepEqual(await page.locator("header nav").getByRole("button").allTextContents(), ["Home", "How it works", "Features"]);
+      assert.equal(await page.locator("header nav").getByRole("link", { name: "Home", exact: true }).getAttribute("href"), "/welcome");
+      assert.equal(await page.locator("header nav").getByRole("link", { name: "How it works", exact: true }).getAttribute("href"), "/welcome/how-it-works");
+      assert.equal(await page.locator("header nav").getByRole("link", { name: "Features", exact: true }).getAttribute("href"), "/welcome/features");
       assert.equal(await page.locator("header nav").getByRole("link", { name: "FAQ" }).getAttribute("href"), "/welcome/faq");
       assert.equal(await page.locator("header nav").getByRole("link", { name: "Contact us" }).getAttribute("href"), "/welcome/contact");
     } else {
@@ -63,17 +65,34 @@ try {
   const next = new URL(reduced.url()).searchParams.get("next");
   assert.equal(next, "/save?url=https%3A%2F%2Fexample.com&source=chrome-extension");
   console.log("PASS reduced motion, public landing route and protected save handoff.");
-  for (const [path, title] of [["privacy", "Privacy Policy"], ["terms", "Terms of Use"], ["faq", "Frequently asked questions"], ["contact", "Contact Kivo"]]) {
+  for (const [path, title] of [["privacy", "Privacy Policy"], ["terms", "Terms of Use"]]) {
     await reduced.goto(`${origin}/welcome/${path}`);
     await reduced.getByRole("heading", { name: title, level: 1, exact: true }).waitFor();
     await reduced.getByRole("navigation", { name: "On this page" }).getByRole("link").last().click();
     assert.ok(new URL(reduced.url()).hash.length > 1);
-    if (path !== "faq") assert.ok(await reduced.locator("article").getByText("MaestroTG", { exact: false }).count() > 0);
-    if (path !== "faq") assert.ok(await reduced.locator("article a[href='https://github.com/yemiSage/kivo']").count() > 0);
+    assert.ok(await reduced.locator("article").getByText("MaestroTG", { exact: false }).count() > 0);
+    assert.ok(await reduced.locator("article a[href='https://github.com/yemiSage/kivo']").count() > 0);
     if (path === "terms") assert.equal(await reduced.locator("article a[href='https://github.com/yemiSage/kivo/blob/main/LICENSE']").count(), 1);
     assert.ok(await reduced.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
   }
   console.log("PASS public policy pages, operator identity and section links.");
+  for (const width of [1440, 390, 320]) {
+    await reduced.setViewportSize({ width, height: 900 });
+    for (const [path, heading, current] of [["how-it-works", /Three small steps/, "How it works"], ["features", /Built for the/, "Features"], ["faq", /A few things/, "FAQ"], ["contact", /The right place/, "Contact us"]]) {
+      await reduced.goto(`${origin}/welcome/${path}`);
+      await reduced.getByRole("heading", { level: 1, name: heading }).waitFor();
+      assert.equal(await reduced.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: current, exact: true }).getAttribute("aria-current"), "page");
+      assert.ok(await reduced.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+      assert.match(await reduced.locator("h1").evaluate(node => getComputedStyle(node).fontFamily), /Bricolage Grotesque/i);
+    }
+  }
+  await reduced.goto(`${origin}/welcome/faq`);
+  assert.equal(await reduced.locator("details").count(), 7);
+  await reduced.getByText("What can I save?", { exact: true }).click();
+  assert.equal(await reduced.locator("#what-can-i-save").getAttribute("open"), "");
+  await reduced.goto(`${origin}/welcome/contact`);
+  assert.ok(await reduced.getByText("MaestroTG", { exact: false }).count() > 0);
+  console.log("PASS How it works, Features, FAQ and Contact public-page layouts.");
 } finally {
   await browser.close();
 }

@@ -13,7 +13,7 @@ Reviewed 22 October 2026 against the local repository with `bedb954` as the impl
 
 | Class | Routes | Index policy |
 | --- | --- | --- |
-| Public and indexable | `/welcome`, `/welcome/faq`, `/welcome/contact`, `/welcome/privacy`, `/welcome/terms` | Sitemap, canonical, index/follow |
+| Public and indexable | `/welcome`, `/welcome/how-it-works`, `/welcome/features`, `/welcome/faq`, `/welcome/contact`, `/welcome/privacy`, `/welcome/terms` | Sitemap, canonical, index/follow |
 | Public machine-readable | `/robots.txt`, `/sitemap.xml`, `/llms.txt`, generated social images | Crawlable, not sitemap page entries |
 | Public but non-indexable | `/login`, `/offline`, `/launch`, auth handoff routes | Root noindex plus route/header controls |
 | Authenticated/private | `/`, `/collections/**`, `/item/**`, `/profile/**`, `/save/**`, `/vault-invite/**` | Auth/RLS plus noindex and robots exclusions |
@@ -24,7 +24,7 @@ Reviewed 22 October 2026 against the local repository with `bedb954` as the impl
 | Area | Existing | Missing/risk | Implementation | Priority | Complexity | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | Metadata | Basic titles/descriptions | No canonicals, social fields, safe default robots | Shared public metadata; global private default | High | Medium | Complete locally |
-| Sitemap | None | Public pages undiscoverable by sitemap | Next.js sitemap with five canonical pages | High | Low | Complete locally |
+| Sitemap | None | Public pages undiscoverable by sitemap | Next.js sitemap with seven canonical pages | High | Low | Complete locally |
 | robots.txt | None | No crawler policy | Search crawlers allowed; private paths excluded; training-only tokens denied | High | Medium | Complete locally |
 | Structured data | None | Product/entity ambiguity | WebSite, SoftwareApplication and visible FAQ JSON-LD | Medium | Medium | Complete locally |
 | Social sharing | No complete OG/X image metadata | Inconsistent previews | Generated 1200×630 OG and X image | High | Medium | Complete locally |
