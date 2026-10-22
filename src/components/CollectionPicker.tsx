@@ -29,7 +29,8 @@ export function CollectionPicker({
   const [pending, start] = useTransition();
   const toast = useToast();
 
-  const add = () =>
+  const add = () => {
+    if (pending || !name.trim()) return;
     start(async () => {
       const res = await createCollection(name);
       if (!res.ok) return toast(res.error, "error");
@@ -38,6 +39,7 @@ export function CollectionPicker({
       setName("");
       setAdding(false);
     });
+  };
 
   return (
     <fieldset className="flex min-w-0 flex-col gap-2">
@@ -63,29 +65,30 @@ export function CollectionPicker({
           );
         })}
         {adding ? (
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              add();
-            }}
-            className="flex shrink-0 items-center gap-1.5"
-          >
+          <div className="flex shrink-0 items-center gap-1.5">
             <Input
               autoFocus
               name="vaultName"
               autoComplete="off"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  add();
+                }
+              }}
               onBlur={() => !name && setAdding(false)}
               placeholder="Vault name"
               maxLength={60}
               aria-label="New vault name"
               className="w-44"
             />
-            <Button type="submit" disabled={pending || !name.trim()}>
+            <Button type="button" onClick={add} disabled={pending || !name.trim()}>
               {pending ? <><LoadingSpinner className="size-5" label="Adding vault" /> Adding…</> : "Add"}
             </Button>
-          </form>
+          </div>
         ) : (
           <button
             type="button"

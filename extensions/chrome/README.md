@@ -11,7 +11,7 @@ This first version hands a URL to the web app. It is not a standalone library or
 3. Click **Load unpacked** and select this `extensions/chrome` folder — the folder containing `manifest.json`, not the repository root.
 4. Open Chrome's extensions menu and pin **Kivo — Save for later** to the toolbar.
 5. Sign in to Kivo in the **same Chrome profile**. An installed PWA or another browser/profile can have a different session.
-6. Visit an ordinary website and click the Kivo icon. A new Kivo tab should open and save the link once signed in. Organise it using the existing save screen.
+6. Visit an ordinary website and click the Kivo icon. A new Kivo tab opens with the link filled in once signed in. Choose a vault, add any tags or notes, then click **Save**. Opening the tab does not save the link automatically.
 
 All required scripts, icons and settings pages are checked in. No extension build, API keys, service-role token or separate Supabase project is needed to use the default hosted Kivo account. Development from source uses the root Node 24/npm toolchain.
 

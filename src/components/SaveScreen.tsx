@@ -35,6 +35,8 @@ export function SaveScreen({ collections, share }: { collections: Collection[]; 
   const router = useRouter();
   const toast = useToast();
   const [input, setInput] = useState("");
+  const [incomingTitle, setIncomingTitle] = useState<string | undefined>();
+  const manualSave = share.source === "chrome-extension";
   const [preview, setPreview] = useState<LinkMetadata | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
   const [collectionId, setCollectionId] = useState<string | null>(null);
@@ -135,7 +137,7 @@ export function SaveScreen({ collections, share }: { collections: Collection[]; 
   const submit = () => {
     setError(null);
     if (file) return doSaveFile(file, url);
-    if (url && validUrl) return doSaveLink(url);
+    if (url && validUrl) return doSaveLink(url, { title: incomingTitle });
     setError("Paste a link or choose an image to save.");
   };
 
@@ -161,15 +163,16 @@ export function SaveScreen({ collections, share }: { collections: Collection[]; 
           const f = new File([blob], name, { type: blob.type });
           setFile(f);
           if (sharedUrl) setInput(sharedUrl);
-          doSaveFile(f, sharedUrl, share.title);
+          if (!manualSave) doSaveFile(f, sharedUrl, share.title);
         } catch {
           toast("Couldn't read the shared image.", "error");
         }
       })();
     } else if (sharedUrl) {
       setInput(sharedUrl);
-      // Zero-tap save: shared content is saved immediately; organise after.
-      doSaveLink(sharedUrl, { title: share.title && share.title !== sharedUrl ? share.title : undefined });
+      const title = share.title && share.title !== sharedUrl ? share.title : undefined;
+      setIncomingTitle(title);
+      if (!manualSave) doSaveLink(sharedUrl, { title });
     } else if (share.text) {
       setInput(share.text);
     }
@@ -183,9 +186,11 @@ export function SaveScreen({ collections, share }: { collections: Collection[]; 
       if (!text) return toast("Your clipboard is empty.", "info");
       setFile(null);
       setInput(text.trim());
+      setIncomingTitle(undefined);
       const link = extractUrl(text);
-      if (link) doSaveLink(link);
-      else toast("No link found on your clipboard.", "info");
+      if (link) {
+        if (!manualSave) doSaveLink(link);
+      } else toast("No link found on your clipboard.", "info");
     } catch {
       toast("Clipboard access was blocked — long-press the field and paste instead.", "info");
     }
@@ -194,6 +199,7 @@ export function SaveScreen({ collections, share }: { collections: Collection[]; 
   const reset = () => {
     setSaved(null);
     setInput("");
+    setIncomingTitle(undefined);
     setPreview(null);
     setFile(null);
     setTags([]);
@@ -235,12 +241,13 @@ export function SaveScreen({ collections, share }: { collections: Collection[]; 
               value={input}
               onChange={(e) => {
                 setInput(e.target.value);
+                setIncomingTitle(undefined);
                 setError(null);
               }}
               onPaste={(e) => {
                 // Pasting a link is intent enough: save immediately.
                 const link = extractUrl(e.clipboardData.getData("text"));
-                if (link && !file && !input) {
+                if (link && !file && !input && !manualSave) {
                   e.preventDefault();
                   setInput(link);
                   doSaveLink(link);
@@ -251,13 +258,13 @@ export function SaveScreen({ collections, share }: { collections: Collection[]; 
               className="h-full min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-muted-foreground md:text-sm"
             />
             {input && !busy && (
-              <Button type="button" variant="ghost" size="icon-sm" onClick={() => setInput("")} aria-label="Clear link">
+              <Button type="button" variant="ghost" size="icon-sm" onClick={() => { setInput(""); setIncomingTitle(undefined); }} aria-label="Clear link">
                 <XIcon size={16} />
               </Button>
             )}
           </div>
           <p id="link-help" className="text-xs text-muted-foreground">
-            Paste a link from Instagram, TikTok, X, Pinterest or any site. It saves as soon as you paste.
+            {manualSave ? "Review the link, choose a vault, then click Save." : "Paste a link from Instagram, TikTok, X, Pinterest or any site. It saves as soon as you paste."}
           </p>
         </div>
 
@@ -265,7 +272,7 @@ export function SaveScreen({ collections, share }: { collections: Collection[]; 
         {!input && !file && (
           <div className="grid grid-cols-2 gap-3">
             {[
-              { label: "Paste & save", hint: "From clipboard", Icon: ClipboardIcon, onClick: pasteFromClipboard },
+              { label: manualSave ? "Paste link" : "Paste & save", hint: "From clipboard", Icon: ClipboardIcon, onClick: pasteFromClipboard },
               { label: "Upload image", hint: "From this device", Icon: ImageIcon, onClick: () => fileInput.current?.click() },
             ].map(({ label, hint, Icon, onClick }) => (
               <button

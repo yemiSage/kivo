@@ -170,6 +170,8 @@ If a file fails, stop and inspect its dependency/error. A missing `public.can_ac
 
 ### Existing projects and migration tracking
 
+For the vault-creation fix, apply [0010_fix_vault_creation.sql](supabase/migrations/0010_fix_vault_creation.sql) to projects with shared vaults (`0002`) installed. This lets the owner read a newly inserted vault in the same statement without changing shared-member access. It does not depend on the optional R2 storage migration (`0009`). Deploying the app does not apply this SQL automatically.
+
 Back up the intended project, check its migration ledger and apply **only pending files**. An installation already through `0007` needs `0008`. Pushing code or running `npm run build` does not execute SQL.
 
 Record the project, file name, date and outcome when using the SQL Editor. Manual SQL does not automatically establish the CLI migration ledger. Before switching an existing project to `supabase db push`, reconcile its schema/history using the [official migration guidance](https://supabase.com/docs/guides/deployment/database-migrations).
@@ -444,6 +446,8 @@ The app talks to Supabase, requested preview sites/public oEmbed providers, Brev
 The credential scanner detects selected token/private-key formats and service-role JWTs. It does not detect every generic secret, personal image or identifier. History mode covers reachable local refs, not deleted remote refs, GitHub artifacts, external logs or deployed secrets. Rotate exposed credentials at their provider; a new deletion commit cannot remove historical copies.
 
 ## Testing
+
+With the development server running, `npm run test:save:browser` checks that Chrome-extension links wait for an explicit Save click and that inline vault creation does not submit the parent save form. It creates and removes a temporary fixture route and intercepts all save actions; no real account or backend writes are used.
 
 The CI workflow checks lint, types, tests and build on Linux/Windows without production credentials. A committed workflow is not proof of a successful hosted run. Automated tests currently cover search grouping, redirects and URL-cache isolation/expiry/bounds; live RLS, email, mobile sharing and accessibility need integration/manual validation.
 
