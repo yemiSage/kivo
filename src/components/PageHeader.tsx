@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { BrandMark } from "./BrandMark";
+import { BrandLogo } from "./BrandLogo";
 import { ChevronLeftIcon, ChevronRightIcon } from "./icons";
 
 export interface Crumb {
@@ -40,7 +40,7 @@ export function PageHeader({
           </Link>
         ) : (
           <Link href="/" className="flex items-center gap-2 md:hidden">
-            <BrandMark size={32} />
+            <BrandLogo height={32} />
           </Link>
         )}
         <nav aria-label="Breadcrumb" className="hidden min-w-0 items-center gap-1.5 text-[15px] text-muted-foreground md:flex">

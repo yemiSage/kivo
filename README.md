@@ -447,6 +447,10 @@ The credential scanner detects selected token/private-key formats and service-ro
 
 ## Testing
 
+The public landing page is at `/welcome`. Signed-out visits to `/` go there; signed-in visits keep the library. With the development server running, `npm run test:landing:browser` checks its fixed-screen sections, responsive layouts, keyboard controls, reduced motion, and protected save redirects without an account or backend writes.
+
+The linked legal pages are `/welcome/privacy` and `/welcome/terms`. Their operator is MaestroTG, Lagos, Nigeria, with contact address `adegboyeopeyemiazeez@gmail.com`. `KIVO_OPERATOR_NAME`, `KIVO_OPERATOR_CITY`, `KIVO_OPERATOR_COUNTRY`, and `KIVO_PRIVACY_EMAIL` can override the public contact details for a deployment. Rebuild after changing these values.
+
 With the development server running, `npm run test:save:browser` checks that Chrome-extension links wait for an explicit Save click and that inline vault creation does not submit the parent save form. It creates and removes a temporary fixture route and intercepts all save actions; no real account or backend writes are used.
 
 The CI workflow checks lint, types, tests and build on Linux/Windows without production credentials. A committed workflow is not proof of a successful hosted run. Automated tests currently cover search grouping, redirects and URL-cache isolation/expiry/bounds; live RLS, email, mobile sharing and accessibility need integration/manual validation.

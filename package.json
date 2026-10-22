@@ -19,6 +19,7 @@
     "test": "node --test tests/*.test.mjs",
     "test:extension:browser": "node tests/browser/extension-smoke.mjs",
     "test:save:browser": "node tests/browser/save-confirmation.mjs",
+    "test:landing:browser": "node tests/browser/landing-smoke.mjs",
     "check:docs": "node scripts/check-docs.mjs",
     "check:secrets": "node scripts/check-secrets.mjs",
     "check:secrets:history": "node scripts/check-secrets.mjs --history",

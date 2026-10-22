@@ -19,6 +19,9 @@ const contentSecurityPolicy = [
 ].filter(Boolean).join("; ");
 
 const nextConfig: NextConfig = {
+  experimental: {
+    optimizePackageImports: ["iconsax-reactjs"],
+  },
   images: {
     remotePatterns: process.env.NEXT_PUBLIC_SUPABASE_URL ? [{
       protocol: "https",

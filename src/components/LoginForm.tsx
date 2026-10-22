@@ -205,6 +205,12 @@ export function LoginForm({ next }: { next: string }) {
 					"Continue"
 				)}
 			</Button>
+			<p className="text-xs leading-relaxed text-muted-foreground">
+				By continuing, you confirm you are 18 or older and agree to our{" "}
+				<a href="/welcome/terms" className="underline underline-offset-2">Terms of Use</a>.
+				{" "}Read our <a href="/welcome/privacy" className="underline underline-offset-2">Privacy Policy</a>
+				{" "}for how we handle your information.
+			</p>
 		</form>
 	);
 }

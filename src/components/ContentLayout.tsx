@@ -38,11 +38,11 @@ function setLayout(value: string) {
 export function LayoutSwitch() {
   const layout = useSyncExternalStore(subscribe, getLayout, () => "grid");
   return (
-        <ToggleGroup type="single" value={layout} onValueChange={setLayout} aria-label="View layout" spacing={1} className="rounded-xl border bg-secondary p-1">
-          <ToggleGroupItem value="grid" aria-label="Grid view" title="Grid view" className="h-9 gap-1.5 rounded-lg px-3 data-[state=on]:bg-background data-[state=on]:text-foreground">
+        <ToggleGroup type="single" value={layout} onValueChange={setLayout} aria-label="View layout" spacing={0.5} className="h-10 rounded-xl border border-transparent bg-transparent p-1 md:border-border md:bg-secondary">
+          <ToggleGroupItem value="grid" aria-label="Grid view" title="Grid view" className="h-8 gap-1 rounded-lg px-3 text-muted-foreground md:gap-1.5 aria-pressed:bg-transparent data-[state=on]:bg-transparent data-[state=on]:text-foreground md:aria-pressed:bg-background md:data-[state=on]:bg-background md:data-[state=on]:shadow-[0_1px_2px_rgb(40_40_30/0.08)]">
             <GridIcon size={16} /> <span className="text-xs">Grid</span>
           </ToggleGroupItem>
-          <ToggleGroupItem value="list" aria-label="List view" title="List view" className="h-9 gap-1.5 rounded-lg px-3 data-[state=on]:bg-background data-[state=on]:text-foreground">
+          <ToggleGroupItem value="list" aria-label="List view" title="List view" className="h-8 gap-1 rounded-lg px-3 text-muted-foreground md:gap-1.5 aria-pressed:bg-transparent data-[state=on]:bg-transparent data-[state=on]:text-foreground md:aria-pressed:bg-background md:data-[state=on]:bg-background md:data-[state=on]:shadow-[0_1px_2px_rgb(40_40_30/0.08)]">
             <ListIcon size={16} /> <span className="text-xs">List</span>
           </ToggleGroupItem>
         </ToggleGroup>
@@ -53,7 +53,7 @@ export function ContentLayout({ children, showControl = true }: { children: Reac
   const layout = useSyncExternalStore(subscribe, getLayout, () => "grid");
   return (
     <div className="group/layout min-w-0" data-layout={layout}>
-      {showControl && <div className="mb-4 flex justify-end">
+      {showControl && <div className="mb-4 flex justify-start md:justify-end">
         <LayoutSwitch />
       </div>
       }

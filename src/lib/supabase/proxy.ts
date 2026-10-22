@@ -16,7 +16,7 @@ export async function updateSession(request: NextRequest) {
 
 	// A static, account-free launch screen must not wait for an Auth round trip.
 	// The library it navigates to still runs the normal auth gate and RLS checks.
-	if (request.nextUrl.pathname === "/launch") return response;
+	if (request.nextUrl.pathname === "/launch" || request.nextUrl.pathname === "/welcome" || request.nextUrl.pathname.startsWith("/welcome/")) return response;
 
 	if (!env.configured) return response;
 
@@ -44,6 +44,12 @@ export async function updateSession(request: NextRequest) {
 		!pathname.startsWith("/api")
 	) {
 		const url = request.nextUrl.clone();
+		if (pathname === "/" && !search) {
+			url.pathname = "/welcome";
+			const redirect = NextResponse.redirect(url);
+			response.cookies.getAll().forEach((c) => redirect.cookies.set(c));
+			return redirect;
+		}
 		url.pathname = "/login";
 		// Preserve shared content through the sign-in detour.
 		url.search = `?next=${encodeURIComponent(pathname + search)}`;

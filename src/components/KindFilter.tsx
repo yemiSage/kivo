@@ -47,7 +47,7 @@ export function KindFilter({ basePath, active, extra = {} }: { basePath: string;
         })}
       </div>
     </nav>
-    <div className="flex shrink-0 justify-end"><LayoutSwitch /></div>
+    <div className="flex h-10 shrink-0 justify-start md:justify-end"><LayoutSwitch /></div>
     </div>
   );
 }
