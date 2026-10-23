@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { signOut } from "@/app/actions";
+import { EMAIL_REQUEST_KEY } from "@/lib/email-auth";
 import type { Collection } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -149,6 +150,7 @@ export function Sidebar({ email, collections }: { email: string | null; collecti
               <DropdownMenuItem
                 onSelect={() => {
                   navigator.serviceWorker?.controller?.postMessage("clear-user-cache");
+                  try { sessionStorage.removeItem(EMAIL_REQUEST_KEY); } catch { /* Optional storage. */ }
                   void signOut();
                 }}
               >

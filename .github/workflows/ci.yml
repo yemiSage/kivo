@@ -39,3 +39,7 @@ jobs:
       - run: npm audit --audit-level=high
       - run: npm run build
       - run: npm run test:discoverability:production
+      - run: npx playwright install --with-deps chromium
+        if: runner.os == 'Linux'
+      - run: npm run test:auth:browser
+        if: runner.os == 'Linux'

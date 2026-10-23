@@ -4,6 +4,7 @@ import { signOut } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { LogoutIcon } from "./icons";
 import { LoadingSpinner } from "./LoadingSpinner";
+import { EMAIL_REQUEST_KEY } from "@/lib/email-auth";
 
 export function SignOutButton() {
   const [pending, start] = useTransition();
@@ -15,6 +16,7 @@ export function SignOutButton() {
         start(async () => {
           // Drop offline caches so the next person on this device can't see this library.
           navigator.serviceWorker?.controller?.postMessage("clear-user-cache");
+          try { sessionStorage.removeItem(EMAIL_REQUEST_KEY); } catch { /* Optional storage. */ }
           await signOut();
         })
       }

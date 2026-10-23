@@ -198,8 +198,8 @@ In Supabase **Authentication → URL Configuration**:
 
 1. Set **Site URL** to the appropriate app origin, such as `http://localhost:3000` or `https://your-kivo.example`.
 2. Add your local/deployed origins and the callback paths you use to **Redirect URLs**.
-3. The default email-link flow requests `/auth/implicit?next=...`. Allow that callback and its query string on your own origins. For development, an origin-scoped pattern such as `http://localhost:3000/**` covers it; keep production rules as narrow as practical.
-4. Optional PKCE/token-hash flows use `/auth/callback` and `/auth/confirm`; configure those only on your own origins when used.
+3. The email-link flow requests `/auth/implicit?next=...`. Allow that callback and its query string on your own origins. It accepts legacy PKCE/implicit returns and forwards token-hash links to an explicit confirmation screen. For development, an origin-scoped pattern such as `http://localhost:3000/**` covers it; keep production rules as narrow as practical.
+4. The server PKCE callback remains at `/auth/callback`. Token-hash links use `/auth/confirm` and `/auth/verify` for explicit confirmation; serve these on the same requesting app origin.
 5. Configure preview/admin origins separately if you sign in there. Do not allow unrelated origins.
 
 See the [redirect URL documentation](https://supabase.com/docs/guides/auth/redirect-urls). These dashboard settings are separate from `.env.local` and the migrations.
@@ -208,18 +208,9 @@ See the [redirect URL documentation](https://supabase.com/docs/guides/auth/redir
 
 Enable the Email provider and allow new-user signup if self-registration is intended. Set **Email OTP length to 6**. Choose its expiry in the same provider configuration. Editing template text alone does not change token length.
 
-In the **Magic Link / OTP** email template:
+After deploying the app, install **both** maintained template bodies: [Confirm sign up](supabase/templates/confirm-signup.html) for new users and [Magic link / OTP](supabase/templates/magic-link.html) for returning users. Both include `{{ .Token }}` and an app confirmation link using `{{ .RedirectTo }}` and `{{ .TokenHash }}`. The link waits for an explicit confirmation POST, so an email scanner's GET does not consume it. The requesting app supplies `RedirectTo` with its `next` query parameter; preserve that query when editing the link. See the [authentication repair and release guide](docs/AUTHENTICATION.md).
 
-```html
-<h2>Sign in to Kivo</h2>
-<p>Your Kivo sign-in code:</p>
-<p><strong>{{ .Token }}</strong></p>
-<p>Enter this code in the app where you requested it.</p>
-<p>Or <a href="{{ .ConfirmationURL }}">sign in to Kivo</a>.</p>
-<p>If you did not request this email, you can ignore it.</p>
-```
-
-Do not hard-code a code, add a second empty token-hash link or promise a five-minute expiry unless configured. If the project sends new users a different signup-confirmation template, test that email and ensure its code/link flow works too. Request a **new** email after changes: existing messages and consumed links do not update.
+Do not hard-code a code, add an empty token-hash link or promise a five-minute expiry unless configured. Test new-user signup as well as returning-user sign-in. Request a **new** email after changes: existing messages and consumed links do not update. The app waits 60 seconds before resending and uses the provider's stated cooldown when a request is rate limited.
 
 Installed PWAs can have separate storage from the browser opening an email. Request a code in the installed Kivo window and enter it there. A link signing in the browser does not necessarily sign in the installed app.
 

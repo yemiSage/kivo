@@ -1,37 +1,41 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { safeNext } from "@/lib/safe-next";
 import { BrandLogo } from "@/components/BrandLogo";
 import { getBrowserSupabase } from "@/lib/supabase/client";
+import { EMAIL_REQUEST_KEY, finishEmailLink, loginRecoveryPath } from "@/lib/email-auth";
 
 export default function ImplicitAuthPage() {
+	const finishing = useRef(false);
 	useEffect(() => {
+		if (finishing.current) return;
+		finishing.current = true;
 		const finish = async () => {
 			const next = safeNext(
 				new URLSearchParams(window.location.search).get("next"),
 			);
-			const params = new URLSearchParams(window.location.hash.slice(1));
-			const accessToken = params.get("access_token");
-			const refreshToken = params.get("refresh_token");
-
-			if (!accessToken || !refreshToken) {
-				window.location.replace("/login?error=link");
+			const query = new URLSearchParams(window.location.search);
+			// Updated templates may be used by an email requested from an older
+			// app version. Forward its hash to the scanner-safe confirmation page.
+			if (query.has("token_hash")) {
+				window.location.replace(`/auth/confirm?${query}`);
 				return;
 			}
-
-			const supabase = getBrowserSupabase();
-			const { error } = await supabase.auth.setSession({
-				access_token: accessToken,
-				refresh_token: refreshToken,
-			});
-			if (error) {
-				window.location.replace("/login?error=link");
-				return;
+			try {
+				const result = await finishEmailLink(getBrowserSupabase().auth, window.location.search, window.location.hash);
+				// Remove credentials from browser history even when verification fails.
+				window.history.replaceState(null, "", "/auth/implicit");
+				if (result !== "ok") {
+					window.location.replace(loginRecoveryPath(result, next));
+					return;
+				}
+				try { sessionStorage.removeItem(EMAIL_REQUEST_KEY); } catch { /* Storage can be disabled. */ }
+				window.location.replace(next);
+			} catch {
+				window.history.replaceState(null, "", "/auth/implicit");
+				window.location.replace(loginRecoveryPath("link", next));
 			}
-
-			window.history.replaceState(null, "", "/auth/implicit");
-			window.location.replace(next);
 		};
 
 		void finish();

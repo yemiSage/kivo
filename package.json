@@ -20,6 +20,7 @@
     "test:extension:browser": "node tests/browser/extension-smoke.mjs",
     "test:save:browser": "node tests/browser/save-confirmation.mjs",
     "test:landing:browser": "node tests/browser/landing-smoke.mjs",
+    "test:auth:browser": "node tests/browser/auth-signup.mjs",
     "test:discoverability:production": "node tests/discoverability-production.mjs",
     "check:docs": "node scripts/check-docs.mjs",
     "check:secrets": "node scripts/check-secrets.mjs",
