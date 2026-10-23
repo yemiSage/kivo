@@ -81,6 +81,32 @@ try {
     assert.ok(ready, `Production server failed to start. ${output}`);
   }
 
+  // Server-rendered controls must not submit a native GET before React is
+  // attached. A slow connection exposed this race in the deployed login form.
+  const slow = await setup({ width: 360, height: 800 });
+  let releaseScripts;
+  const scriptsPaused = new Promise(resolve => { releaseScripts = resolve; });
+  await slow.page.route("**/_next/static/**", async route => {
+    if (new URL(route.request().url()).pathname.endsWith(".js")) await scriptsPaused;
+    await route.continue();
+  });
+  try {
+    await slow.page.goto(login, { waitUntil: "commit" });
+    await slow.page.getByLabel("Email", { exact: true }).waitFor({ state: "visible" });
+    assert.equal(await slow.page.getByLabel("Email", { exact: true }).isEnabled(), false);
+    assert.equal(await slow.page.getByRole("button", { name: "Getting ready…", exact: true }).isEnabled(), false);
+    assert.equal(slow.state.emails, 0);
+  } finally {
+    releaseScripts();
+  }
+  await slow.page.getByLabel("Email", { exact: true }).fill("signup@example.test");
+  await slow.page.getByRole("button", { name: "Continue", exact: true }).click();
+  await slow.page.getByRole("heading", { name: "Check your inbox" }).waitFor();
+  assert.equal(slow.state.emails, 1);
+  assert.deepEqual(slow.state.errors, []);
+  await slow.context.close();
+  console.log("PASS delayed JavaScript: no native form submission before hydration; sign-in works once ready.");
+
   for (const viewport of [{ width: 360, height: 800 }, { width: 375, height: 812 }, { width: 390, height: 844 }, { width: 1440, height: 960 }]) {
     const { context, page, state } = await setup(viewport);
     await page.clock.install();

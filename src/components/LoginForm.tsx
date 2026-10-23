@@ -13,6 +13,7 @@ const OTP_LENGTH = 6;
 
 /** Passwordless email-link sign-in with a code fallback for isolated PWA storage. */
 export function LoginForm({ next, linkError }: { next: string; linkError?: "link" | "browser" }) {
+	const [ready, setReady] = useState(false);
 	const [email, setEmail] = useState("");
 	const [code, setCode] = useState("");
 	const [sent, setSent] = useState(false);
@@ -51,6 +52,7 @@ export function LoginForm({ next, linkError }: { next: string; linkError?: "link
 				setRemaining(secondsUntil(pending.retryAt));
 			}
 		} catch { /* Sign-in still works without session storage. */ }
+		setReady(true);
 	}, [next]);
 
 	useEffect(() => {
@@ -263,7 +265,7 @@ export function LoginForm({ next, linkError }: { next: string; linkError?: "link
 					autoComplete="email"
 					inputMode="email"
 					required
-					disabled={busy}
+					disabled={!ready || busy}
 					value={email}
 					onChange={(e) => setEmail(e.target.value)}
 					placeholder="you@example.com"
@@ -279,8 +281,8 @@ export function LoginForm({ next, linkError }: { next: string; linkError?: "link
 					</p>
 				)}
 			</div>
-			<Button type="submit" disabled={busy || remaining > 0}>
-				{busy ? (
+			<Button type="submit" disabled={!ready || busy || remaining > 0}>
+				{!ready ? "Getting ready…" : busy ? (
 					<>
 						<LoadingSpinner className="size-4" label="Sending link" /> Sending
 						link…
